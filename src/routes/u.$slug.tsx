@@ -45,7 +45,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto w-full max-w-md rounded-3xl border border-border/70 bg-card-gradient p-7 shadow-soft">
+    <div className="relative mx-auto w-full max-w-md rounded-3xl border border-border/70 bg-card-gradient p-7 shadow-soft">
       {children}
     </div>
   );
@@ -91,8 +91,9 @@ function PublicPage() {
 
   async function handleSend() {
     setStatus("sending");
+    const flight = new Promise((r) => setTimeout(r, 950));
     try {
-      const res = await send({ data: { slug, content } });
+      const [res] = await Promise.all([send({ data: { slug, content } }), flight]);
       if (res.ok) {
         setStatus("sent");
         setContent("");
@@ -147,6 +148,12 @@ function PublicPage() {
         <p className="mt-2 text-center text-sm text-muted-foreground">
           They'll never know who wrote it.
         </p>
+
+        {status === "sending" && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-card/80 backdrop-blur-[2px]">
+            <EnvelopeMark className="size-16 animate-envelope-send" />
+          </div>
+        )}
 
         <Textarea
           value={content}
