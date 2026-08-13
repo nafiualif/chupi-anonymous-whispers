@@ -97,9 +97,16 @@
   --gradient-card: linear-gradient(140deg, oklch(0.99 0.012 320) 0%, oklch(0.97 0.03 340) 100%);
   --shadow-soft: 0 10px 30px -12px oklch(0.55 0.12 310 / 0.28);
   --shadow-lift: 0 18px 45px -18px oklch(0.5 0.14 310 / 0.4);
+
+  --seal: oklch(0.52 0.16 22);
+  --seal-ring: oklch(0.44 0.15 22);
+  --seal-foreground: oklch(0.96 0.03 20);
+  --envelope-paper: oklch(0.99 0.012 90);
+  --envelope-body: oklch(0.95 0.03 330);
+  --envelope-line: oklch(0.5 0.13 305);
+  --paper-line: oklch(0.55 0.12 310 / 0.07);
 }
 
-.dark {
   --background: oklch(0.18 0.03 305);
   --foreground: oklch(0.96 0.012 320);
   --card: oklch(0.24 0.04 305);
