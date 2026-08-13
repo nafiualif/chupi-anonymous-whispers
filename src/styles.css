@@ -107,6 +107,8 @@
   --paper-line: oklch(0.55 0.12 310 / 0.07);
 }
 
+.dark {
+
   --background: oklch(0.18 0.03 305);
   --foreground: oklch(0.96 0.012 320);
   --card: oklch(0.24 0.04 305);
