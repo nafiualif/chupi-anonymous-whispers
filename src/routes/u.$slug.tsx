@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Lock, Send, Sparkles } from "lucide-react";
+import { Lock, Send } from "lucide-react";
 
 import { Brand, SafetyFooter } from "@/components/chupi/Brand";
+import { EnvelopeMark } from "@/components/chupi/EnvelopeMark";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { getPublicProfile, sendAnonymousMessage } from "@/lib/chupi.functions";
@@ -44,7 +45,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto w-full max-w-md rounded-3xl border border-border/70 bg-card-gradient p-7 shadow-soft">
+    <div className="relative mx-auto w-full max-w-md rounded-3xl border border-border/70 bg-card-gradient p-7 shadow-soft">
       {children}
     </div>
   );
@@ -90,8 +91,9 @@ function PublicPage() {
 
   async function handleSend() {
     setStatus("sending");
+    const flight = new Promise((r) => setTimeout(r, 950));
     try {
-      const res = await send({ data: { slug, content } });
+      const [res] = await Promise.all([send({ data: { slug, content } }), flight]);
       if (res.ok) {
         setStatus("sent");
         setContent("");
@@ -114,8 +116,8 @@ function PublicPage() {
       <Shell>
         <Card>
           <div className="text-center">
-            <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-brand-gradient shadow-soft">
-              <Sparkles className="size-6 text-primary-foreground" />
+            <span className="mx-auto flex size-16 items-center justify-center rounded-3xl bg-card shadow-soft">
+              <EnvelopeMark className="size-10" />
             </span>
             <h1 className="mt-4 font-display text-2xl font-bold">Your message was sent anonymously!</h1>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -147,6 +149,12 @@ function PublicPage() {
           They'll never know who wrote it.
         </p>
 
+        {status === "sending" && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-card/80 backdrop-blur-[2px]">
+            <EnvelopeMark className="size-16 animate-envelope-send" />
+          </div>
+        )}
+
         <Textarea
           value={content}
           onChange={(e) => {
@@ -156,7 +164,7 @@ function PublicPage() {
           rows={5}
           maxLength={1000}
           placeholder="Say something kind, funny, or honest…"
-          className="mt-6 rounded-2xl bg-background/70 text-base"
+          className="mt-6 min-h-40 rounded-2xl border-border/70 bg-paper text-base leading-7 shadow-soft focus-visible:ring-seal/40"
         />
 
         {status === "blocked" && (

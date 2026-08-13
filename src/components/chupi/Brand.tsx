@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
+import { EnvelopeMark } from "./EnvelopeMark";
 
 export function Brand({ to = "/" }: { to?: string }) {
   return (
     <Link to={to} className="inline-flex items-center gap-2">
-      <span className="flex size-9 items-center justify-center rounded-2xl bg-brand-gradient shadow-soft">
-        <span className="font-display text-lg font-bold text-primary-foreground">C</span>
+      <span className="flex size-10 items-center justify-center rounded-2xl bg-card shadow-soft">
+        <EnvelopeMark className="size-7" />
       </span>
       <span className="font-display text-2xl font-bold tracking-tight text-brand-gradient">Chupi</span>
     </Link>

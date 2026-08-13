@@ -164,7 +164,7 @@ function Dashboard() {
             {messagesQuery.data?.map((m) => (
               <article
                 key={m.id}
-                className="rounded-3xl border border-border/70 bg-card-gradient p-5 shadow-soft"
+                className="letter-card rounded-3xl border border-border/70 bg-paper p-5 pt-8 shadow-soft"
               >
                 <p className="whitespace-pre-wrap text-base leading-relaxed">{m.content}</p>
                 {m.reply && (
