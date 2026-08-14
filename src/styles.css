@@ -258,9 +258,31 @@
   box-shadow: var(--shadow-lift);
 }
 
+/* Safe-area helpers for notched / gesture-bar phones */
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Reserves room for the fixed mobile bottom nav */
+@utility pb-nav {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  @media (width >= 48rem) {
+    padding-bottom: 2.5rem;
+  }
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
@@ -269,6 +291,9 @@
     background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   h1,
@@ -276,5 +301,26 @@
   h3,
   .font-display {
     font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  /* Tactile press feedback on touch targets */
+  button,
+  a[role="button"] {
+    touch-action: manipulation;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
+

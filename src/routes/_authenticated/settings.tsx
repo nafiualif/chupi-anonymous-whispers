@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 import { AppHeader } from "@/components/chupi/AppHeader";
+import { BottomNav } from "@/components/chupi/BottomNav";
 import { SafetyFooter } from "@/components/chupi/Brand";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -54,11 +55,11 @@ function SettingsPage() {
     <div className="min-h-screen">
       <AppHeader />
 
-      <main className="mx-auto w-full max-w-3xl px-5">
+      <main className="mx-auto w-full max-w-3xl px-4 sm:px-5">
         <h1 className="font-display text-xl font-bold">Settings</h1>
 
-        <section className="mt-5 rounded-3xl border border-border/70 bg-card-gradient p-6 shadow-soft">
-          <div className="flex items-start justify-between gap-6">
+        <section className="mt-4 rounded-3xl border border-border/70 bg-card-gradient p-5 shadow-soft sm:mt-5 sm:p-6">
+          <div className="flex items-start justify-between gap-4 sm:gap-6">
             <div>
               <Label htmlFor="link-toggle" className="font-display text-base font-semibold">
                 Public message link
@@ -77,16 +78,29 @@ function SettingsPage() {
           </div>
         </section>
 
-        <section className="mt-4 rounded-3xl border border-border/70 bg-card/70 p-6">
+        <section className="mt-4 rounded-3xl border border-border/70 bg-card/70 p-5 sm:p-6">
           <h2 className="font-display text-base font-semibold">Staying safe</h2>
           <p className="mt-1.5 text-sm text-muted-foreground">
             Chupi automatically blocks messages containing hate speech, harassment, sexual content
             or bullying. You can also report and delete anything that slips through.
           </p>
         </section>
+
+        <section className="mt-4 rounded-3xl border border-border/70 bg-card/70 p-5 sm:p-6">
+          <h2 className="font-display text-base font-semibold">What we store</h2>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Senders are never asked for a name or an email, and their identity is never shown to
+            you. To block spam we do keep a short-lived, one-way scrambled record of the sender's
+            network address — it can't be turned back into a person.
+          </p>
+        </section>
+
+        <div className="pb-nav">
+          <SafetyFooter />
+        </div>
       </main>
 
-      <SafetyFooter />
+      <BottomNav />
     </div>
   );
 }
