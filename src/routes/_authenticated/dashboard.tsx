@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Copy, Flag, Instagram, MessageCircleHeart, Share2, Trash2 } from "lucide-react";
 
 import { AppHeader } from "@/components/chupi/AppHeader";
+import { BottomNav } from "@/components/chupi/BottomNav";
 import { SafetyFooter } from "@/components/chupi/Brand";
 import { StoryCardDialog } from "@/components/chupi/StoryCardDialog";
 import { Button } from "@/components/ui/button";

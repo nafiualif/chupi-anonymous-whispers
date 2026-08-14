@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 import { AppHeader } from "@/components/chupi/AppHeader";
+import { BottomNav } from "@/components/chupi/BottomNav";
 import { SafetyFooter } from "@/components/chupi/Brand";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
