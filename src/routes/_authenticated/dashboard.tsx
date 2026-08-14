@@ -106,12 +106,12 @@ function Dashboard() {
     <div className="min-h-screen">
       <AppHeader />
 
-      <main className="mx-auto w-full max-w-3xl px-5">
-        <section className="rounded-3xl border border-border/70 bg-card-gradient p-6 shadow-soft">
+      <main className="mx-auto w-full max-w-3xl px-4 sm:px-5">
+        <section className="rounded-3xl border border-border/70 bg-card-gradient p-5 shadow-soft sm:p-6">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Your Chupi link
           </p>
-          <p className="mt-2 break-all font-display text-lg font-semibold">
+          <p className="mt-2 break-all font-display text-base font-semibold sm:text-lg">
             {profileQuery.isLoading ? "Loading…" : link}
           </p>
           {profile && !profile.link_enabled && (
@@ -119,11 +119,11 @@ function Dashboard() {
               Your link is currently turned off — no one can send you messages.
             </p>
           )}
-          <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+          <div className="mt-4 flex flex-col gap-2 sm:mt-5 sm:flex-row">
             <Button
               onClick={copyLink}
               disabled={!link}
-              className="rounded-full bg-brand-gradient shadow-soft sm:flex-1"
+              className="h-11 rounded-full bg-brand-gradient shadow-soft active:scale-[0.98] sm:flex-1"
             >
               <Copy className="size-4" /> Copy link
             </Button>
@@ -131,83 +131,104 @@ function Dashboard() {
               onClick={shareToInstagram}
               disabled={!link}
               variant="outline"
-              className="rounded-full bg-background/60 sm:flex-1"
+              className="h-11 rounded-full bg-background/60 active:scale-[0.98] sm:flex-1"
             >
               <Instagram className="size-4" /> Share to story
             </Button>
           </div>
         </section>
 
-        <section className="mt-8 pb-4">
+        <section className="mt-6 sm:mt-8">
           <h1 className="font-display text-xl font-bold">Inbox</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Newest first. Nothing here is linked to a sender.
           </p>
 
-          <div className="mt-5 space-y-3">
+          <div className="mt-4 space-y-3 sm:mt-5">
             {messagesQuery.isLoading && (
-              <div className="rounded-3xl border border-border/70 bg-card/70 p-6 text-sm text-muted-foreground">
+              <div className="rounded-3xl border border-border/70 bg-card/70 p-5 text-sm text-muted-foreground sm:p-6">
                 Loading your messages…
               </div>
             )}
 
             {messagesQuery.data?.length === 0 && (
-              <div className="rounded-3xl border border-dashed border-border bg-card/60 p-10 text-center">
+              <div className="rounded-3xl border border-dashed border-border bg-card/60 p-7 text-center sm:p-10">
                 <MessageCircleHeart className="mx-auto size-8 text-primary" />
-                <p className="mt-3 font-display text-lg font-semibold">No messages yet</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Share your link and they'll start landing here.
+                <p className="mt-3 font-display text-lg font-semibold">
+                  Your Chupi is quiet… for now 👀
                 </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Share your link and the first letter will land right here.
+                </p>
+                <Button
+                  onClick={copyLink}
+                  disabled={!link}
+                  className="mt-5 h-11 rounded-full bg-brand-gradient shadow-soft active:scale-[0.98]"
+                >
+                  <Copy className="size-4" /> Share your Chupi link
+                </Button>
               </div>
             )}
 
             {messagesQuery.data?.map((m) => (
               <article
                 key={m.id}
-                className="letter-card rounded-3xl border border-border/70 bg-paper p-5 pt-8 shadow-soft"
+                className="letter-card rounded-3xl border border-border/70 bg-paper p-4 pt-7 shadow-soft sm:p-5 sm:pt-8"
               >
-                <p className="whitespace-pre-wrap text-base leading-relaxed">{m.content}</p>
+                <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed sm:text-base">
+                  {m.content}
+                </p>
                 {m.reply && (
                   <p className="mt-3 rounded-2xl bg-accent/60 p-3 text-sm text-accent-foreground">
                     <span className="font-medium">Your reply: </span>
                     {m.reply}
                   </p>
                 )}
-                <div className="mt-4 flex flex-wrap items-center gap-2">
-                  <span className="mr-auto text-xs text-muted-foreground">
-                    {new Date(m.created_at).toLocaleString()}
-                    {m.is_reported && " · reported"}
-                  </span>
+
+                <p className="mt-4 text-xs text-muted-foreground">
+                  {new Date(m.created_at).toLocaleString()}
+                  {m.is_reported && " · reported"}
+                </p>
+
+                <div className="mt-2 flex items-center gap-1.5">
                   <Button
                     size="sm"
                     variant="secondary"
-                    className="rounded-full"
+                    className="h-9 rounded-full px-3 text-xs active:scale-[0.97] sm:text-sm"
                     onClick={() => setStoryMessage(m)}
                   >
-                    <Share2 className="size-4" /> Reply publicly
+                    <Share2 className="size-4" /> Reply
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="rounded-full"
+                    className="ml-auto size-9 rounded-full p-0"
+                    aria-label="Report this message"
+                    title="Report"
                     disabled={m.is_reported}
                     onClick={() => reportMutation.mutate(m.id)}
                   >
-                    <Flag className="size-4" /> Report
+                    <Flag className="size-4" />
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="rounded-full text-destructive hover:text-destructive"
+                    className="size-9 rounded-full p-0 text-destructive hover:text-destructive"
+                    aria-label="Delete this message"
+                    title="Delete"
                     onClick={() => deleteMutation.mutate(m.id)}
                   >
-                    <Trash2 className="size-4" /> Delete
+                    <Trash2 className="size-4" />
                   </Button>
                 </div>
               </article>
             ))}
           </div>
         </section>
+
+        <div className="pb-nav">
+          <SafetyFooter />
+        </div>
       </main>
 
       <StoryCardDialog
@@ -216,7 +237,7 @@ function Dashboard() {
         onOpenChange={(open) => !open && setStoryMessage(null)}
       />
 
-      <SafetyFooter />
+      <BottomNav />
     </div>
   );
 }
