@@ -34,10 +34,10 @@ export const Route = createFileRoute("/u/$slug")({
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="mx-auto flex w-full max-w-3xl justify-center px-5 py-6">
+      <header className="pt-safe mx-auto flex w-full max-w-3xl justify-center px-4 py-5 sm:px-5 sm:py-6">
         <Brand />
       </header>
-      <main className="flex-1 px-5">{children}</main>
+      <main className="flex-1 px-4 sm:px-5">{children}</main>
       <SafetyFooter />
     </div>
   );
@@ -45,7 +45,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative mx-auto w-full max-w-md rounded-3xl border border-border/70 bg-card-gradient p-7 shadow-soft">
+    <div className="relative mx-auto w-full max-w-md rounded-3xl border border-border/70 bg-card-gradient p-5 shadow-soft sm:p-7">
       {children}
     </div>
   );
