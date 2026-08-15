@@ -116,14 +116,19 @@ function PublicPage() {
       <Shell>
         <Card>
           <div className="text-center">
-            <span className="mx-auto flex size-16 items-center justify-center rounded-3xl bg-card shadow-soft">
-              <EnvelopeMark className="size-10" />
+            <span className="mx-auto flex size-14 items-center justify-center rounded-3xl bg-card shadow-soft sm:size-16">
+              <EnvelopeMark className="size-9 sm:size-10" />
             </span>
-            <h1 className="mt-4 font-display text-2xl font-bold">Your message was sent anonymously!</h1>
+            <h1 className="mt-4 font-display text-xl font-bold leading-snug sm:text-2xl">
+              Your message was sent anonymously!
+            </h1>
             <p className="mt-2 text-sm text-muted-foreground">
               {profile.display_name} will never know it was you. 💜
             </p>
-            <Button className="mt-6 rounded-full bg-brand-gradient shadow-soft" onClick={() => setStatus("idle")}>
+            <Button
+              className="mt-6 h-11 rounded-full bg-brand-gradient px-6 shadow-soft active:scale-[0.98]"
+              onClick={() => setStatus("idle")}
+            >
               Send another
             </Button>
             <p className="mt-6 text-xs text-muted-foreground">
@@ -141,13 +146,14 @@ function PublicPage() {
   return (
     <Shell>
       <Card>
-        <h1 className="text-center font-display text-2xl font-bold leading-snug">
+        <h1 className="text-center font-display text-xl font-bold leading-snug sm:text-2xl">
           Send <span className="text-brand-gradient">{profile.display_name}</span> an anonymous
           message
         </h1>
         <p className="mt-2 text-center text-sm text-muted-foreground">
           They'll never know who wrote it.
         </p>
+
 
         {status === "sending" && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-card/80 backdrop-blur-[2px]">
@@ -163,22 +169,27 @@ function PublicPage() {
           }}
           rows={5}
           maxLength={1000}
+          aria-label="Your anonymous message"
           placeholder="Say something kind, funny, or honest…"
-          className="mt-6 min-h-40 rounded-2xl border-border/70 bg-paper text-base leading-7 shadow-soft focus-visible:ring-seal/40"
+          className="mt-5 min-h-32 rounded-2xl border-border/70 bg-paper text-base leading-7 shadow-soft focus-visible:ring-seal/40 sm:mt-6 sm:min-h-40"
         />
 
+        <p className="mt-1.5 text-right text-[11px] tabular-nums text-muted-foreground">
+          {content.length}/1000
+        </p>
+
         {status === "blocked" && (
-          <p className="mt-3 text-center text-sm text-destructive">
+          <p className="mt-2 text-center text-sm text-destructive">
             This message couldn't be sent.
           </p>
         )}
         {status === "limited" && (
-          <p className="mt-3 text-center text-sm text-destructive">
+          <p className="mt-2 text-center text-sm text-destructive">
             You've sent a few messages already — please try again in a little while.
           </p>
         )}
         {status === "error" && (
-          <p className="mt-3 text-center text-sm text-destructive">
+          <p className="mt-2 text-center text-sm text-destructive">
             Something went wrong. Please try again.
           </p>
         )}
@@ -186,14 +197,14 @@ function PublicPage() {
         <Button
           onClick={handleSend}
           disabled={status === "sending" || content.trim().length < 2}
-          className="mt-4 w-full rounded-full bg-brand-gradient shadow-soft"
+          className="mt-3 h-12 w-full rounded-full bg-brand-gradient text-base shadow-soft transition-transform active:scale-[0.98]"
         >
           <Send className="size-4" />
-          {status === "sending" ? "Sending…" : "Send Anonymous Message"}
+          {status === "sending" ? "Sending…" : "Send anonymously"}
         </Button>
 
-        <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-          <Lock className="size-3.5" /> We never ask for your name or email.
+        <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-xs text-muted-foreground">
+          <Lock className="size-3.5 shrink-0" /> We never ask for your name or email.
         </p>
       </Card>
     </Shell>
