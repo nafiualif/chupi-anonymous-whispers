@@ -81,13 +81,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#f7effa" },
 
-      { title: "Chupi — Anonymous messages, kindly" },
+      { title: "Chupi — Anonymous Messages & Secret Whispers" },
       {
         name: "description",
-        content: "Chupi gives you a link friends can use to send you anonymous messages, safely.",
+        content:
+          "Chupi gives you a personal link friends can use to send you anonymous messages and questions, safely.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Chupi" },
       { name: "twitter:card", content: "summary_large_image" },
+
     ],
     links: [
       { rel: "stylesheet", href: appCss },

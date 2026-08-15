@@ -15,6 +15,8 @@ export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
       { title: "Settings — Chupi" },
+      { name: "robots", content: "noindex, nofollow" },
+
       { name: "description", content: "Turn your public Chupi link on or off anytime." },
       { property: "og:title", content: "Settings — Chupi" },
       { property: "og:description", content: "Turn your public Chupi link on or off anytime." },
