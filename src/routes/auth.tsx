@@ -12,6 +12,8 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Log in or sign up — Chupi" },
+      { name: "robots", content: "noindex, nofollow" },
+
       {
         name: "description",
         content: "Create your free Chupi account to get a personal link for anonymous messages.",

@@ -17,6 +17,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Your inbox — Chupi" },
+      { name: "robots", content: "noindex, nofollow" },
+
       { name: "description", content: "Read the anonymous messages people sent you on Chupi." },
       { property: "og:title", content: "Your inbox — Chupi" },
       { property: "og:description", content: "Read the anonymous messages people sent you on Chupi." },

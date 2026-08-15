@@ -21,9 +21,14 @@ export const Route = createFileRoute("/u/$slug")({
       meta: [
         { title },
         { name: "description", content: description },
+        { name: "robots", content: "noindex, follow" },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
       ],
+
     };
   },
   errorComponent: () => <Shell><Card><p className="text-center text-sm text-muted-foreground">This page couldn't load. Try again in a moment.</p></Card></Shell>,
