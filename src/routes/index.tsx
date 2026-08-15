@@ -4,24 +4,43 @@ import { EnvelopeIllustration } from "@/components/chupi/EnvelopeMark";
 import { Button } from "@/components/ui/button";
 import { Heart, Link2, Lock, Mail, Send, ShieldCheck, Sparkles } from "lucide-react";
 
+const SITE_URL = "https://chupi-anonymous-whispers.lovable.app";
+const HOME_TITLE = "Chupi — Anonymous Messages & Secret Whispers";
+const HOME_DESCRIPTION =
+  "Chupi gives you a personal link so friends can send you anonymous messages and questions. Honest, filtered for hate and harassment, and you can switch your link off anytime.";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Chupi — Send what you really mean, anonymously" },
+      { title: HOME_TITLE },
+      { name: "description", content: HOME_DESCRIPTION },
+      { name: "robots", content: "index, follow" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Chupi" },
+      { property: "og:title", content: HOME_TITLE },
+      { property: "og:description", content: HOME_DESCRIPTION },
+      { property: "og:url", content: `${SITE_URL}/` },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: HOME_TITLE },
+      { name: "twitter:description", content: HOME_DESCRIPTION },
+    ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+    scripts: [
       {
-        name: "description",
-        content:
-          "Share your Chupi link and receive honest anonymous letters. Filtered for hate and harassment, and you can switch your link off anytime.",
-      },
-      { property: "og:title", content: "Chupi — Send what you really mean, anonymously" },
-      {
-        property: "og:description",
-        content: "Share your link, collect kind anonymous letters, reply publicly with story cards.",
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Chupi",
+          url: `${SITE_URL}/`,
+          description: HOME_DESCRIPTION,
+        }),
       },
     ],
   }),
   component: Home,
 });
+
 
 const steps = [
   {
