@@ -146,13 +146,14 @@ function PublicPage() {
   return (
     <Shell>
       <Card>
-        <h1 className="text-center font-display text-2xl font-bold leading-snug">
+        <h1 className="text-center font-display text-xl font-bold leading-snug sm:text-2xl">
           Send <span className="text-brand-gradient">{profile.display_name}</span> an anonymous
           message
         </h1>
         <p className="mt-2 text-center text-sm text-muted-foreground">
           They'll never know who wrote it.
         </p>
+
 
         {status === "sending" && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-card/80 backdrop-blur-[2px]">
