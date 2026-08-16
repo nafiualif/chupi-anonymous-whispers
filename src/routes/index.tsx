@@ -15,6 +15,7 @@ export const Route = createFileRoute("/")({
       { title: HOME_TITLE },
       { name: "description", content: HOME_DESCRIPTION },
       { name: "robots", content: "index, follow" },
+      { name: "google-site-verification", content: "ijVgVm4p5Eln5BZIrqysXGRCPQmbfkLTdpQgeTMLzS0" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Chupi" },
       { property: "og:title", content: HOME_TITLE },
