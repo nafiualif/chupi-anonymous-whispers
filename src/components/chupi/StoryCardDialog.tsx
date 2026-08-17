@@ -107,32 +107,57 @@ export function StoryCardDialog({
 
         <div
           ref={cardRef}
-          className="relative overflow-hidden rounded-3xl bg-brand-gradient p-6 text-primary-foreground shadow-lift"
+          className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] bg-brand-gradient p-6 text-primary-foreground shadow-lift"
         >
-          <div className="flex items-center gap-2">
-            <EnvelopeMark className="size-6" />
-            <span className="font-display text-sm font-semibold tracking-wide">Chupi</span>
+          {/* soft decorative seal in the corner */}
+          <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-white/10 blur-xl" />
+          <div className="pointer-events-none absolute -bottom-12 -left-8 size-36 rounded-full bg-white/5 blur-2xl" />
+
+          {/* header / branding */}
+          <div className="relative flex items-center gap-2">
+            <span className="flex size-9 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm">
+              <EnvelopeMark className="size-6" />
+            </span>
+            <span className="font-display text-sm font-bold tracking-wide">Chupi</span>
           </div>
 
-          <p className="mt-5 text-[11px] font-semibold uppercase tracking-widest opacity-80">
-            Anonymous message
-          </p>
-          <p className="mt-2 whitespace-pre-wrap font-display text-lg font-semibold leading-snug">
-            {message?.content}
-          </p>
+          {/* anonymous message */}
+          <div className="relative mt-6">
+            <span
+              className="block font-display text-5xl leading-none opacity-30"
+              aria-hidden="true"
+            >
+              &ldquo;
+            </span>
+            <p className="-mt-3 whitespace-pre-wrap font-display text-lg font-semibold leading-snug">
+              {message?.content}
+            </p>
+          </div>
 
-          {reply.trim() && (
-            <div className="mt-5 rounded-2xl bg-card/95 p-4 text-card-foreground shadow-soft">
-              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                {displayName || "My"} reply
-              </p>
-              <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed">{reply}</p>
-            </div>
-          )}
+          {/* divider */}
+          <div className="relative mt-5 flex items-center gap-3 opacity-60">
+            <span className="h-px flex-1 bg-white/40" />
+            <EnvelopeMark className="size-4 opacity-70" />
+            <span className="h-px flex-1 bg-white/40" />
+          </div>
 
-          <p className="mt-6 text-right text-[11px] font-medium opacity-75">
-            chupi · anonymous letters
-          </p>
+          {/* reply */}
+          <div className="relative mt-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-70">
+              {displayName || "My"} reply
+            </p>
+            <p className="mt-2 whitespace-pre-wrap text-[15px] leading-relaxed opacity-95">
+              {reply.trim() || (
+                <span className="opacity-50 italic">Write your reply below…</span>
+              )}
+            </p>
+          </div>
+
+          {/* footer */}
+          <div className="absolute inset-x-6 bottom-5 flex items-center justify-between text-[10px] font-medium opacity-70">
+            <span>anonymous letters</span>
+            <span>chupi</span>
+          </div>
         </div>
 
         <Textarea
@@ -140,6 +165,7 @@ export function StoryCardDialog({
           onChange={(e) => setReply(e.target.value)}
           placeholder="Write your public reply…"
           rows={3}
+          maxLength={500}
           className="rounded-2xl bg-background/70 text-base"
         />
 
