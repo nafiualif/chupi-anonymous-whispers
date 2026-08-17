@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      blocked_senders: {
+        Row: {
+          created_at: string
+          id: string
+          sender_hash: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          sender_hash: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          sender_hash?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blocked_senders_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          message_id: string
+          reason: string
+          reporter_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          message_id: string
+          reason: string
+          reporter_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          message_id?: string
+          reason?: string
+          reporter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reports_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
@@ -23,6 +94,7 @@ export type Database = {
           is_reported: boolean
           recipient_id: string
           reply: string | null
+          sender_hash: string | null
         }
         Insert: {
           content: string
@@ -32,6 +104,7 @@ export type Database = {
           is_reported?: boolean
           recipient_id: string
           reply?: string | null
+          sender_hash?: string | null
         }
         Update: {
           content?: string
@@ -41,6 +114,7 @@ export type Database = {
           is_reported?: boolean
           recipient_id?: string
           reply?: string | null
+          sender_hash?: string | null
         }
         Relationships: [
           {
