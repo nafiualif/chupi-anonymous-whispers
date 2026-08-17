@@ -75,15 +75,82 @@ export const sendAnonymousMessage = createServerFn({ method: "POST" })
       return { ok: false as const, reason: "flagged" as const };
     }
 
+    // --- blocked senders: silently drop so the sender learns nothing ---
+    const { data: blocked } = await supabaseAdmin
+      .from("blocked_senders")
+      .select("id")
+      .eq("user_id", profile.id)
+      .eq("sender_hash", ipHash)
+      .maybeSingle();
+
+    if (blocked) return { ok: true as const };
+
     const { error } = await supabaseAdmin.from("messages").insert({
       recipient_id: profile.id,
       content,
       is_flagged: false,
+      sender_hash: ipHash,
     });
 
     if (error) return { ok: false as const, reason: "error" as const };
     return { ok: true as const };
   });
+
+export const reportMessage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { messageId: string; reason: string; details?: string }) => data)
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const allowed = ["harassment", "spam", "hate", "sexual", "other"];
+    if (!allowed.includes(data.reason)) return { ok: false as const };
+
+    const { data: message } = await supabase
+      .from("messages")
+      .select("id")
+      .eq("id", data.messageId)
+      .maybeSingle();
+    if (!message) return { ok: false as const };
+
+    await supabase.from("message_reports").upsert(
+      {
+        message_id: data.messageId,
+        reporter_id: userId,
+        reason: data.reason,
+        details: (data.details ?? "").trim().slice(0, 500) || null,
+      },
+      { onConflict: "message_id,reporter_id" },
+    );
+
+    await supabase.from("messages").update({ is_reported: true }).eq("id", data.messageId);
+    return { ok: true as const };
+  });
+
+export const blockMessageSender = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { messageId: string }) => data)
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    const { data: message } = await supabase
+      .from("messages")
+      .select("id, sender_hash")
+      .eq("id", data.messageId)
+      .maybeSingle();
+
+    if (!message) return { ok: false as const, reason: "not_found" as const };
+    if (!message.sender_hash) return { ok: false as const, reason: "unknown_sender" as const };
+
+    const { error } = await supabase
+      .from("blocked_senders")
+      .upsert(
+        { user_id: userId, sender_hash: message.sender_hash },
+        { onConflict: "user_id,sender_hash" },
+      );
+
+    if (error) return { ok: false as const, reason: "error" as const };
+    return { ok: true as const };
+  });
+
 
 function randomSlug(displayName: string): string {
   const base =
