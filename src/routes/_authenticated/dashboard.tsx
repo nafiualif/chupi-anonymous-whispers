@@ -3,15 +3,26 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Copy, Flag, Instagram, MessageCircleHeart, Share2, Trash2 } from "lucide-react";
+import { Ban, Copy, Flag, Instagram, MessageCircleHeart, Share2, Trash2 } from "lucide-react";
 
 import { AppHeader } from "@/components/chupi/AppHeader";
 import { BottomNav } from "@/components/chupi/BottomNav";
 import { SafetyFooter } from "@/components/chupi/Brand";
 import { StoryCardDialog } from "@/components/chupi/StoryCardDialog";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
-import { ensureProfile } from "@/lib/chupi.functions";
+import { blockMessageSender, ensureProfile, reportMessage } from "@/lib/chupi.functions";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -33,12 +44,25 @@ type Message = {
   created_at: string;
   is_reported: boolean;
   reply: string | null;
+  sender_hash: string | null;
 };
+
+const REPORT_REASONS = [
+  { value: "harassment", label: "Harassment" },
+  { value: "spam", label: "Spam" },
+  { value: "hate", label: "Hate/Abuse" },
+  { value: "sexual", label: "Sexual Content" },
+  { value: "other", label: "Other" },
+] as const;
 
 function Dashboard() {
   const queryClient = useQueryClient();
   const ensure = useServerFn(ensureProfile);
+  const report = useServerFn(reportMessage);
+  const block = useServerFn(blockMessageSender);
   const [storyMessage, setStoryMessage] = useState<Message | null>(null);
+  const [reportTarget, setReportTarget] = useState<Message | null>(null);
+  const [reportReason, setReportReason] = useState<string>("harassment");
 
   const profileQuery = useQuery({
     queryKey: ["profile"],
@@ -50,7 +74,7 @@ function Dashboard() {
     queryFn: async (): Promise<Message[]> => {
       const { data, error } = await supabase
         .from("messages")
-        .select("id, content, created_at, is_reported, reply")
+        .select("id, content, created_at, is_reported, reply, sender_hash")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -70,16 +94,33 @@ function Dashboard() {
   });
 
   const reportMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("messages").update({ is_reported: true }).eq("id", id);
-      if (error) throw error;
+    mutationFn: async (vars: { messageId: string; reason: string }) => {
+      const res = await report({ data: vars });
+      if (!res.ok) throw new Error("failed");
     },
     onSuccess: () => {
       toast.success("Reported. Thanks for flagging it — you can delete it too.");
+      setReportTarget(null);
       queryClient.invalidateQueries({ queryKey: ["messages"] });
     },
     onError: () => toast.error("Couldn't report that message"),
   });
+
+  const blockMutation = useMutation({
+    mutationFn: async (messageId: string) => {
+      const res = await block({ data: { messageId } });
+      if (!res.ok) throw new Error(res.reason);
+      return res;
+    },
+    onSuccess: () => toast.success("Sender blocked — they can't message you again."),
+    onError: (e: Error) =>
+      toast.error(
+        e.message === "unknown_sender"
+          ? "This message is too old to block its sender."
+          : "Couldn't block that sender",
+      ),
+  });
+
 
   const profile = profileQuery.data;
   const link =
@@ -206,13 +247,28 @@ function Dashboard() {
                     size="sm"
                     variant="ghost"
                     className="ml-auto size-9 rounded-full p-0"
+                    aria-label="Block this sender"
+                    title="Block sender"
+                    disabled={blockMutation.isPending}
+                    onClick={() => blockMutation.mutate(m.id)}
+                  >
+                    <Ban className="size-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="size-9 rounded-full p-0"
                     aria-label="Report this message"
                     title="Report"
                     disabled={m.is_reported}
-                    onClick={() => reportMutation.mutate(m.id)}
+                    onClick={() => {
+                      setReportReason("harassment");
+                      setReportTarget(m);
+                    }}
                   >
                     <Flag className="size-4" />
                   </Button>
+
                   <Button
                     size="sm"
                     variant="ghost"
@@ -239,6 +295,42 @@ function Dashboard() {
         displayName={profile?.display_name ?? ""}
         onOpenChange={(open) => !open && setStoryMessage(null)}
       />
+
+      <Dialog open={!!reportTarget} onOpenChange={(open) => !open && setReportTarget(null)}>
+        <DialogContent className="rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="font-display">Report this message</DialogTitle>
+            <DialogDescription>
+              Pick a reason. Reports are private and help us keep Chupi safe.
+            </DialogDescription>
+          </DialogHeader>
+
+          <RadioGroup value={reportReason} onValueChange={setReportReason} className="gap-2">
+            {REPORT_REASONS.map((r) => (
+              <div key={r.value} className="flex items-center gap-3 rounded-2xl border border-border/70 p-3">
+                <RadioGroupItem value={r.value} id={`reason-${r.value}`} />
+                <Label htmlFor={`reason-${r.value}`} className="text-sm font-normal">
+                  {r.label}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+
+          <DialogFooter>
+            <Button
+              className="h-11 w-full rounded-full bg-brand-gradient shadow-soft active:scale-[0.98]"
+              disabled={reportMutation.isPending}
+              onClick={() =>
+                reportTarget &&
+                reportMutation.mutate({ messageId: reportTarget.id, reason: reportReason })
+              }
+            >
+              {reportMutation.isPending ? "Sending…" : "Submit report"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
 
       <BottomNav />
     </div>
