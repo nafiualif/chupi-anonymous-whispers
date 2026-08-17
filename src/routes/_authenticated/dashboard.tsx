@@ -296,6 +296,42 @@ function Dashboard() {
         onOpenChange={(open) => !open && setStoryMessage(null)}
       />
 
+      <Dialog open={!!reportTarget} onOpenChange={(open) => !open && setReportTarget(null)}>
+        <DialogContent className="rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="font-display">Report this message</DialogTitle>
+            <DialogDescription>
+              Pick a reason. Reports are private and help us keep Chupi safe.
+            </DialogDescription>
+          </DialogHeader>
+
+          <RadioGroup value={reportReason} onValueChange={setReportReason} className="gap-2">
+            {REPORT_REASONS.map((r) => (
+              <div key={r.value} className="flex items-center gap-3 rounded-2xl border border-border/70 p-3">
+                <RadioGroupItem value={r.value} id={`reason-${r.value}`} />
+                <Label htmlFor={`reason-${r.value}`} className="text-sm font-normal">
+                  {r.label}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+
+          <DialogFooter>
+            <Button
+              className="h-11 w-full rounded-full bg-brand-gradient shadow-soft active:scale-[0.98]"
+              disabled={reportMutation.isPending}
+              onClick={() =>
+                reportTarget &&
+                reportMutation.mutate({ messageId: reportTarget.id, reason: reportReason })
+              }
+            >
+              {reportMutation.isPending ? "Sending…" : "Submit report"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+
       <BottomNav />
     </div>
   );
