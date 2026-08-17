@@ -3,15 +3,26 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Copy, Flag, Instagram, MessageCircleHeart, Share2, Trash2 } from "lucide-react";
+import { Ban, Copy, Flag, Instagram, MessageCircleHeart, Share2, Trash2 } from "lucide-react";
 
 import { AppHeader } from "@/components/chupi/AppHeader";
 import { BottomNav } from "@/components/chupi/BottomNav";
 import { SafetyFooter } from "@/components/chupi/Brand";
 import { StoryCardDialog } from "@/components/chupi/StoryCardDialog";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
-import { ensureProfile } from "@/lib/chupi.functions";
+import { blockMessageSender, ensureProfile, reportMessage } from "@/lib/chupi.functions";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
