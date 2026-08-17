@@ -247,13 +247,28 @@ function Dashboard() {
                     size="sm"
                     variant="ghost"
                     className="ml-auto size-9 rounded-full p-0"
+                    aria-label="Block this sender"
+                    title="Block sender"
+                    disabled={blockMutation.isPending}
+                    onClick={() => blockMutation.mutate(m.id)}
+                  >
+                    <Ban className="size-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="size-9 rounded-full p-0"
                     aria-label="Report this message"
                     title="Report"
                     disabled={m.is_reported}
-                    onClick={() => reportMutation.mutate(m.id)}
+                    onClick={() => {
+                      setReportReason("harassment");
+                      setReportTarget(m);
+                    }}
                   >
                     <Flag className="size-4" />
                   </Button>
+
                   <Button
                     size="sm"
                     variant="ghost"
