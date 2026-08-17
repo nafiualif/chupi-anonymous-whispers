@@ -162,6 +162,26 @@ function randomSlug(displayName: string): string {
   return `${base}-${suffix}`;
 }
 
+export const updateProfile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { displayName?: string }) => data ?? {})
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    const displayName = (data.displayName ?? "").trim();
+    if (displayName.length === 0 || displayName.length > 40) {
+      return { ok: false as const, reason: "invalid" as const };
+    }
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ display_name: displayName })
+      .eq("id", userId);
+
+    if (error) return { ok: false as const, reason: "error" as const };
+    return { ok: true as const };
+  });
+
 export const ensureProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { displayName?: string }) => data ?? {})
