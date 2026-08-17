@@ -44,12 +44,25 @@ type Message = {
   created_at: string;
   is_reported: boolean;
   reply: string | null;
+  sender_hash: string | null;
 };
+
+const REPORT_REASONS = [
+  { value: "harassment", label: "Harassment" },
+  { value: "spam", label: "Spam" },
+  { value: "hate", label: "Hate/Abuse" },
+  { value: "sexual", label: "Sexual Content" },
+  { value: "other", label: "Other" },
+] as const;
 
 function Dashboard() {
   const queryClient = useQueryClient();
   const ensure = useServerFn(ensureProfile);
+  const report = useServerFn(reportMessage);
+  const block = useServerFn(blockMessageSender);
   const [storyMessage, setStoryMessage] = useState<Message | null>(null);
+  const [reportTarget, setReportTarget] = useState<Message | null>(null);
+  const [reportReason, setReportReason] = useState<string>("harassment");
 
   const profileQuery = useQuery({
     queryKey: ["profile"],
@@ -61,7 +74,7 @@ function Dashboard() {
     queryFn: async (): Promise<Message[]> => {
       const { data, error } = await supabase
         .from("messages")
-        .select("id, content, created_at, is_reported, reply")
+        .select("id, content, created_at, is_reported, reply, sender_hash")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -81,16 +94,33 @@ function Dashboard() {
   });
 
   const reportMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("messages").update({ is_reported: true }).eq("id", id);
-      if (error) throw error;
+    mutationFn: async (vars: { messageId: string; reason: string }) => {
+      const res = await report({ data: vars });
+      if (!res.ok) throw new Error("failed");
     },
     onSuccess: () => {
       toast.success("Reported. Thanks for flagging it — you can delete it too.");
+      setReportTarget(null);
       queryClient.invalidateQueries({ queryKey: ["messages"] });
     },
     onError: () => toast.error("Couldn't report that message"),
   });
+
+  const blockMutation = useMutation({
+    mutationFn: async (messageId: string) => {
+      const res = await block({ data: { messageId } });
+      if (!res.ok) throw new Error(res.reason);
+      return res;
+    },
+    onSuccess: () => toast.success("Sender blocked — they can't message you again."),
+    onError: (e: Error) =>
+      toast.error(
+        e.message === "unknown_sender"
+          ? "This message is too old to block its sender."
+          : "Couldn't block that sender",
+      ),
+  });
+
 
   const profile = profileQuery.data;
   const link =
