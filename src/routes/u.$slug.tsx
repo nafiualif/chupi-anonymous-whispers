@@ -152,7 +152,7 @@ function PublicPage() {
     <Shell>
       <Card>
         <h1 className="text-center font-display text-xl font-bold leading-snug sm:text-2xl">
-          Send <span className="text-brand-gradient">{profile.display_name}</span> an anonymous
+          Send <span className="text-primary">{profile.display_name}</span> an anonymous
           message
         </h1>
         <p className="mt-2 text-center text-sm text-muted-foreground">

@@ -3,14 +3,15 @@ import { EnvelopeMark } from "./EnvelopeMark";
 
 export function Brand({ to = "/" }: { to?: string }) {
   return (
-    <Link to={to} className="inline-flex items-center gap-2">
-      <span className="flex size-9 items-center justify-center rounded-2xl bg-card shadow-soft sm:size-10">
-        <EnvelopeMark className="size-6 sm:size-7" />
+    <Link to={to} className="inline-flex items-center gap-2.5">
+      <span className="flex size-9 items-center justify-center rounded-xl border border-border bg-card sm:size-10">
+        <EnvelopeMark className="size-5 sm:size-6" />
       </span>
-      <span className="font-display text-xl font-bold tracking-tight text-brand-gradient sm:text-2xl">
+      <span className="font-display text-xl font-bold tracking-tight text-foreground sm:text-[1.4rem]">
         Chupi
       </span>
     </Link>
+
   );
 }
 

@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Brand, SafetyFooter } from "@/components/chupi/Brand";
-import { EnvelopeIllustration } from "@/components/chupi/EnvelopeMark";
 import { Button } from "@/components/ui/button";
-import { Heart, Link2, Lock, Mail, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowUpRight, Lock } from "lucide-react";
+
 
 const SITE_URL = "https://chupi-anonymous-whispers.lovable.app";
 const HOME_TITLE = "Chupi — Anonymous Messages & Secret Whispers";
@@ -42,144 +42,201 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-
 const steps = [
   {
-    icon: Link2,
+    n: "01",
     title: "Get your Chupi link",
     body: "Sign up in seconds and we hand you a personal link that's yours alone.",
   },
   {
-    icon: Send,
+    n: "02",
     title: "Share it anywhere",
     body: "Drop it in your bio, your story, or a group chat — wherever your people are.",
   },
   {
-    icon: Mail,
+    n: "03",
     title: "Receive honest letters",
-    body: "Anonymous notes land in your inbox like little sealed envelopes.",
+    body: "Anonymous notes land in your inbox, filtered for hate and harassment.",
   },
 ];
 
-const features = [
+const avatars = [
+  { initials: "AS", tone: "bg-pastel-butter" },
+  { initials: "MK", tone: "bg-pastel-sage" },
+  { initials: "JR", tone: "bg-pastel-lilac" },
+  { initials: "NL", tone: "bg-pastel-coral" },
+];
+
+const promises = [
   {
-    icon: Sparkles,
-    title: "Your own link",
-    body: "Get a personal chupi.link that you can drop in your bio or story.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Filtered by default",
-    body: "Hate speech, harassment and sexual content never reach your inbox.",
-  },
-  {
-    icon: Lock,
     title: "Truly anonymous",
     body: "Senders are never asked for a name, an email, or anything else.",
   },
   {
-    icon: Heart,
+    title: "Filtered by default",
+    body: "Hate speech, harassment and sexual content never reach your inbox.",
+  },
+  {
     title: "Reply publicly",
-    body: "Turn any message into a pretty card you can screenshot and share.",
+    body: "Turn any message into a clean card you can download and share.",
+  },
+  {
+    title: "Off whenever you want",
+    body: "One toggle in settings quietly switches your link off.",
   },
 ];
 
 function Home() {
   return (
     <div className="min-h-screen">
-      <header className="pt-safe mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4 sm:px-6 sm:py-6">
+      <header className="pt-safe mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-5 sm:px-8 sm:py-7">
         <Brand />
-        <Link to="/auth">
-          <Button variant="ghost" className="h-10 rounded-full px-4">
-            Log in
-          </Button>
+        <Link
+          to="/auth"
+          className="text-sm font-semibold text-primary underline-offset-4 hover:underline"
+        >
+          Log in
         </Link>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6">
-        <section className="grid items-center gap-8 pt-4 sm:pt-10 md:grid-cols-2">
-          <div className="text-center md:text-left">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3.5 py-1.5 text-xs font-medium text-muted-foreground">
-              <Sparkles className="size-3.5 text-seal" />
-              Honest words, zero pressure
-            </span>
-            <h1 className="mt-5 font-display text-[2rem] font-bold leading-[1.12] tracking-tight sm:text-5xl">
-              Chupi — say what you <span className="text-brand-gradient">really</span> mean,
-              anonymously.
-            </h1>
-            <p className="mx-auto mt-4 max-w-xl text-balance text-[15px] text-muted-foreground sm:mt-5 sm:text-lg md:mx-0">
-              One little link, sealed like a letter. Share it, and anyone can write you an
-              anonymous note — kindly, safely, and without signing up.
-            </p>
-            <div className="mt-7 flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center md:justify-start">
-              <Link to="/auth" search={{ mode: "signup" }} className="sm:w-auto">
-                <Button
-                  size="lg"
-                  className="h-12 w-full rounded-full bg-brand-gradient px-8 text-base shadow-soft transition-all hover:shadow-lift active:scale-[0.98] sm:w-auto"
-                >
-                  Get my Chupi link
-                </Button>
-              </Link>
-              <Link to="/auth" className="sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="h-12 w-full rounded-full bg-card/60 px-8 text-base active:scale-[0.98] sm:w-auto"
-                >
-                  I already have one
-                </Button>
+      <main className="mx-auto w-full max-w-5xl px-5 sm:px-8">
+        {/* Hero */}
+        <section className="pt-6 sm:pt-14">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-widest text-forest">
+            <span className="size-1.5 rounded-full bg-primary" />
+            Honest words, zero pressure
+          </span>
+
+          <h1 className="mt-6 max-w-3xl font-display text-[2.35rem] font-bold leading-[1.05] tracking-tight sm:text-6xl">
+            Chupi — say what you <span className="text-primary">really mean</span>, anonymously.
+          </h1>
+
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            One little link, sealed like a letter. Share it, and anyone can write you an anonymous
+            note — kindly, safely, and without signing up.
+          </p>
+
+          <div className="mt-8 max-w-sm">
+            <Link to="/auth" search={{ mode: "signup" }} className="block">
+              <Button
+                size="lg"
+                className="h-13 w-full rounded-full px-8 text-base font-semibold shadow-soft transition-colors active:scale-[0.99]"
+              >
+                Get my Chupi link
+                <ArrowUpRight className="size-4.5" />
+              </Button>
+            </Link>
+            <div className="mt-4">
+              <Link
+                to="/auth"
+                className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
+              >
+                I already have a Chupi →
               </Link>
             </div>
-            <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground md:justify-start">
-              <Lock className="size-3.5 shrink-0 text-seal" />
-              Fully anonymous — senders never give a name or email.
-            </p>
           </div>
 
-          <EnvelopeIllustration className="mx-auto w-full max-w-[16rem] sm:max-w-sm" />
+          <div className="mt-9 flex items-center gap-3">
+            <div className="flex -space-x-2.5">
+              {avatars.map((a) => (
+                <span
+                  key={a.initials}
+                  className={`flex size-8 items-center justify-center rounded-full border border-background text-[0.62rem] font-bold text-foreground ${a.tone}`}
+                >
+                  {a.initials}
+                </span>
+              ))}
+            </div>
+            <p className="text-xs leading-snug text-muted-foreground">
+              Thousands of quiet letters sent — no sender info ever stored.
+            </p>
+          </div>
         </section>
 
-        <section className="mt-12 sm:mt-16">
-          <h2 className="text-center font-display text-xl font-semibold sm:text-2xl">
+        {/* Preview cards */}
+        <section className="relative mt-14 sm:mt-20">
+          <div className="relative mx-auto max-w-md">
+            <div className="rotate-[-1.5deg] rounded-3xl border border-border bg-card p-6 shadow-soft">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-widest text-muted-foreground">
+                Anonymous
+              </p>
+              <p className="mt-3 font-display text-lg leading-snug text-foreground">
+                “You have no idea how much your kindness changed my semester.”
+              </p>
+            </div>
+            <div className="mt-[-1rem] ml-6 rotate-[2deg] rounded-3xl bg-forest p-6 text-forest-foreground shadow-lift">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-widest opacity-70">
+                Your reply
+              </p>
+              <p className="mt-3 font-display text-lg leading-snug">
+                “Whoever you are — thank you. That made my whole week.”
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section className="mt-16 sm:mt-24">
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
             How it works
+          </p>
+          <h2 className="mt-3 max-w-lg font-display text-3xl font-bold leading-tight sm:text-4xl">
+            Three quiet steps to honest letters.
           </h2>
-          <ol className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-3 sm:gap-4">
-            {steps.map((s, i) => (
+
+          <ol className="mt-8 border-t border-border">
+            {steps.map((s) => (
               <li
-                key={s.title}
-                className="rounded-3xl border border-border/70 bg-paper p-5 shadow-soft sm:p-6"
+                key={s.n}
+                className="flex gap-5 border-b border-border py-6 sm:gap-8 sm:py-7"
               >
-                <div className="flex items-center gap-3">
-                  <span className="flex size-10 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
-                    <s.icon className="size-5" />
-                  </span>
-                  <span className="font-display text-sm font-semibold text-seal">Step {i + 1}</span>
+                <span className="font-display text-lg font-bold text-primary sm:text-xl">
+                  {s.n}
+                </span>
+                <div>
+                  <h3 className="font-display text-xl font-semibold sm:text-2xl">{s.title}</h3>
+                  <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    {s.body}
+                  </p>
                 </div>
-                <h3 className="mt-3.5 font-display text-lg font-semibold">{s.title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{s.body}</p>
               </li>
             ))}
           </ol>
         </section>
 
-        <section className="mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 sm:gap-4">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="rounded-3xl border border-border/70 bg-card-gradient p-5 shadow-soft sm:p-6"
-            >
-              <span className="flex size-10 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
-                <f.icon className="size-5" />
-              </span>
-              <h2 className="mt-3.5 font-display text-lg font-semibold">{f.title}</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">{f.body}</p>
+        {/* Featured green card */}
+        <section className="mt-16 sm:mt-24">
+          <div className="relative rounded-3xl bg-forest p-8 text-forest-foreground sm:p-12">
+            <span className="absolute -top-3 left-8 rounded-full bg-card px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-widest text-forest shadow-soft">
+              Kind words live here
+            </span>
+            <p className="font-display text-2xl font-semibold leading-snug sm:text-[2rem]">
+              “Chupi is the only place my friends tell me the truth — and somehow it always comes
+              out gentle.”
+            </p>
+            <p className="mt-6 text-xs font-semibold uppercase tracking-widest opacity-70">
+              100% anonymous · we never store sender info
+            </p>
+          </div>
+        </section>
+
+        {/* Promises */}
+        <section className="mt-16 grid gap-4 sm:mt-20 sm:grid-cols-2">
+          {promises.map((f) => (
+            <div key={f.title} className="rounded-3xl border border-border bg-card p-6">
+              <h2 className="font-display text-xl font-semibold">{f.title}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
             </div>
           ))}
         </section>
+
+        <p className="mt-10 flex items-center gap-2 text-xs text-muted-foreground">
+          <Lock className="size-3.5 shrink-0 text-primary" />
+          Fully anonymous — senders never give a name or email.
+        </p>
       </main>
 
       <SafetyFooter />
     </div>
   );
 }
-
