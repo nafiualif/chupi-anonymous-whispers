@@ -326,8 +326,15 @@
   h3,
   .font-display {
     font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
     text-wrap: balance;
   }
+
+  p {
+    line-height: 1.65;
+  }
+
 
   /* Tactile press feedback on touch targets */
   button,
