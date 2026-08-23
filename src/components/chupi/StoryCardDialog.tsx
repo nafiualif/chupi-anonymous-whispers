@@ -107,7 +107,7 @@ export function StoryCardDialog({
 
         <div
           ref={cardRef}
-          className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] bg-brand-gradient p-6 text-primary-foreground shadow-lift"
+          className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] bg-forest p-6 text-forest-foreground shadow-lift"
         >
           {/* soft decorative seal in the corner */}
           <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-white/10 blur-xl" />
