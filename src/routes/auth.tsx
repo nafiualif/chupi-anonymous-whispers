@@ -38,9 +38,16 @@ function AuthPage() {
   const [checkEmail, setCheckEmail] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard", replace: true });
-    });
+    try {
+      supabase.auth
+        .getSession()
+        .then(({ data }) => {
+          if (data.session) navigate({ to: "/dashboard", replace: true });
+        })
+        .catch((error) => console.error("[Chupi] Session check failed:", error));
+    } catch (error) {
+      console.error("[Chupi] Auth unavailable:", error);
+    }
   }, [navigate]);
 
   async function handleSubmit(e: React.FormEvent) {
