@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Brand, SafetyFooter } from "@/components/chupi/Brand";
-import { EnvelopeIllustration } from "@/components/chupi/EnvelopeMark";
 import { Button } from "@/components/ui/button";
-import { Heart, Link2, Lock, Mail, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowUpRight, Lock } from "lucide-react";
+
 
 const SITE_URL = "https://chupi-anonymous-whispers.lovable.app";
 const HOME_TITLE = "Chupi — Anonymous Messages & Secret Whispers";
