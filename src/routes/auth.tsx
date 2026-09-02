@@ -67,12 +67,12 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin,
             data: { display_name: displayName },
           },
         });
         if (error) throw error;
         if (!data.session) {
+          setCode("");
           setCheckEmail(true);
           return;
         }
