@@ -7,6 +7,11 @@ import { Brand, SafetyFooter } from "@/components/chupi/Brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -36,6 +41,9 @@ function AuthPage() {
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
+  const [code, setCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     try {
@@ -59,12 +67,12 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin,
             data: { display_name: displayName },
           },
         });
         if (error) throw error;
         if (!data.session) {
+          setCode("");
           setCheckEmail(true);
           return;
         }
@@ -83,6 +91,38 @@ function AuthPage() {
     }
   }
 
+  async function handleVerify(value: string) {
+    setVerifying(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: value,
+        type: "signup",
+      });
+      if (error) throw error;
+      await ensureProfile({ data: { displayName } });
+      navigate({ to: "/dashboard", replace: true });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Invalid or expired code");
+      setCode("");
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  async function handleResend() {
+    setResending(true);
+    try {
+      const { error } = await supabase.auth.resend({ type: "signup", email });
+      if (error) throw error;
+      toast.success("New code sent");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not resend the code");
+    } finally {
+      setResending(false);
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-6">
@@ -93,16 +133,56 @@ function AuthPage() {
         <div className="w-full max-w-md rounded-3xl border border-border/70 bg-card-gradient p-7 shadow-soft">
           {checkEmail ? (
             <div className="text-center">
-              <h1 className="font-display text-2xl font-bold">Check your email</h1>
+              <h1 className="font-display text-2xl font-bold">Enter your code</h1>
               <p className="mt-3 text-sm text-muted-foreground">
-                We sent a confirmation link to <span className="font-medium">{email}</span>. Click it
-                to activate your Chupi link.
+                We sent a 6-digit verification code to{" "}
+                <span className="font-medium">{email}</span>.
               </p>
+
+              <div className="mt-6 flex justify-center">
+                <InputOTP
+                  maxLength={6}
+                  value={code}
+                  disabled={verifying}
+                  onChange={(value) => {
+                    setCode(value);
+                    if (value.length === 6) void handleVerify(value);
+                  }}
+                >
+                  <InputOTPGroup>
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <InputOTPSlot key={i} index={i} className="h-12 w-11 text-lg" />
+                    ))}
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+
               <Button
-                variant="outline"
-                className="mt-6 rounded-full"
+                className="mt-6 w-full rounded-full bg-brand-gradient shadow-soft"
+                disabled={verifying || code.length !== 6}
+                onClick={() => void handleVerify(code)}
+              >
+                {verifying ? "Verifying…" : "Verify & continue"}
+              </Button>
+
+              <p className="mt-4 text-sm text-muted-foreground">
+                Didn&apos;t get it?{" "}
+                <button
+                  type="button"
+                  disabled={resending}
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                  onClick={() => void handleResend()}
+                >
+                  {resending ? "Sending…" : "Resend code"}
+                </button>
+              </p>
+
+              <Button
+                variant="ghost"
+                className="mt-2 rounded-full"
                 onClick={() => {
                   setCheckEmail(false);
+                  setCode("");
                   setMode("login");
                 }}
               >
