@@ -292,6 +292,7 @@ function Dashboard() {
       <StoryCardDialog
         message={storyMessage}
         displayName={profile?.display_name ?? ""}
+        slug={profile?.slug}
         onOpenChange={(open) => !open && setStoryMessage(null)}
       />
 
