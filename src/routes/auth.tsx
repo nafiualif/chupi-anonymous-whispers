@@ -41,6 +41,9 @@ function AuthPage() {
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
+  const [code, setCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     try {
