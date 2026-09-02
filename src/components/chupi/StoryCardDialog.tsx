@@ -119,7 +119,7 @@ export function StoryCardDialog({
 }: {
   message: StoryMessage | null;
   displayName: string;
-  slug?: string;
+  slug?: string | undefined;
   onOpenChange: (open: boolean) => void;
 }) {
   const queryClient = useQueryClient();
