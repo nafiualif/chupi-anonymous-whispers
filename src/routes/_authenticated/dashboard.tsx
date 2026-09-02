@@ -229,20 +229,19 @@ function Dashboard() {
                   </p>
                 )}
 
-                <p className="mt-4 text-xs text-muted-foreground">
-                  {new Date(m.created_at).toLocaleString()}
-                  {m.is_reported && " · reported"}
-                </p>
-
-                <div className="mt-2 flex items-center gap-1.5">
+                <div className="mt-4 flex items-center gap-1.5 border-t border-border/60 pt-3">
                   <Button
                     size="sm"
-                    variant="secondary"
-                    className="h-9 rounded-full px-3 text-xs active:scale-[0.97] sm:text-sm"
+                    className="h-9 rounded-full bg-primary px-3.5 text-xs text-primary-foreground shadow-soft transition-colors hover:bg-primary/90 active:scale-[0.97] sm:text-sm"
                     onClick={() => setStoryMessage(m)}
                   >
-                    <Share2 className="size-4" /> Reply
+                    <Share2 className="size-4" /> Share to Story
                   </Button>
+                  <span className="ml-2 truncate text-[11px] text-muted-foreground sm:text-xs">
+                    {new Date(m.created_at).toLocaleString()}
+                    {m.is_reported && " · reported"}
+                  </span>
+
                   <Button
                     size="sm"
                     variant="ghost"
