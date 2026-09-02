@@ -133,16 +133,56 @@ function AuthPage() {
         <div className="w-full max-w-md rounded-3xl border border-border/70 bg-card-gradient p-7 shadow-soft">
           {checkEmail ? (
             <div className="text-center">
-              <h1 className="font-display text-2xl font-bold">Check your email</h1>
+              <h1 className="font-display text-2xl font-bold">Enter your code</h1>
               <p className="mt-3 text-sm text-muted-foreground">
-                We sent a confirmation link to <span className="font-medium">{email}</span>. Click it
-                to activate your Chupi link.
+                We sent a 6-digit verification code to{" "}
+                <span className="font-medium">{email}</span>.
               </p>
+
+              <div className="mt-6 flex justify-center">
+                <InputOTP
+                  maxLength={6}
+                  value={code}
+                  disabled={verifying}
+                  onChange={(value) => {
+                    setCode(value);
+                    if (value.length === 6) void handleVerify(value);
+                  }}
+                >
+                  <InputOTPGroup>
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <InputOTPSlot key={i} index={i} className="h-12 w-11 text-lg" />
+                    ))}
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+
               <Button
-                variant="outline"
-                className="mt-6 rounded-full"
+                className="mt-6 w-full rounded-full bg-brand-gradient shadow-soft"
+                disabled={verifying || code.length !== 6}
+                onClick={() => void handleVerify(code)}
+              >
+                {verifying ? "Verifying…" : "Verify & continue"}
+              </Button>
+
+              <p className="mt-4 text-sm text-muted-foreground">
+                Didn&apos;t get it?{" "}
+                <button
+                  type="button"
+                  disabled={resending}
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                  onClick={() => void handleResend()}
+                >
+                  {resending ? "Sending…" : "Resend code"}
+                </button>
+              </p>
+
+              <Button
+                variant="ghost"
+                className="mt-2 rounded-full"
                 onClick={() => {
                   setCheckEmail(false);
+                  setCode("");
                   setMode("login");
                 }}
               >
