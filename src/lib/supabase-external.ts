@@ -9,6 +9,14 @@ export const EXTERNAL_SUPABASE_URL = "https://xvkdtmywtnpbyxrsgekn.supabase.co";
 export const EXTERNAL_SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a2R0bXl3dG5wYnl4cnNnZWtuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMzI5OTIsImV4cCI6MjEwMzgwODk5Mn0.6tJghqWTf5VFEwyvjYxO-u4eC_n1OH9warn2kgtVupQ";
 
+// Public, unauthenticated client for the external project (anon key, RLS as anon).
+// Used by public server functions (profile lookup by slug, anonymous message send).
+export function getExternalAnon() {
+  return createClient<Database>(EXTERNAL_SUPABASE_URL, EXTERNAL_SUPABASE_ANON_KEY, {
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
+}
+
 // Validates the bearer token against the external Supabase project and
 // exposes an RLS-scoped client acting as the signed-in user.
 export const requireExternalAuth = createMiddleware({ type: "function" }).server(
