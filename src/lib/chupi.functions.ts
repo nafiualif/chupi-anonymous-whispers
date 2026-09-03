@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireExternalAuth as requireSupabaseAuth } from "./supabase-external";
 import { isFlagged } from "./moderation";
 
 const RATE_LIMIT_MAX = 5;
@@ -17,8 +17,9 @@ async function hashIp(ip: string): Promise<string> {
 export const getPublicProfile = createServerFn({ method: "GET" })
   .inputValidator((data: { slug: string }) => data)
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: profile } = await supabaseAdmin
+    const { getExternalAnon } = await import("./supabase-external");
+    const supabaseAnon = getExternalAnon();
+    const { data: profile } = await supabaseAnon
       .from("profiles")
       .select("display_name, slug, link_enabled")
       .eq("slug", data.slug)
@@ -38,9 +39,10 @@ export const sendAnonymousMessage = createServerFn({ method: "POST" })
       return { ok: false as const, reason: "too_long" as const };
     }
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getExternalAnon } = await import("./supabase-external");
+    const supabaseAnon = getExternalAnon();
 
-    const { data: profile } = await supabaseAdmin
+    const { data: profile } = await supabaseAnon
       .from("profiles")
       .select("id, link_enabled")
       .eq("slug", data.slug)
@@ -58,7 +60,7 @@ export const sendAnonymousMessage = createServerFn({ method: "POST" })
     const ipHash = await hashIp(rawIp);
     const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60_000).toISOString();
 
-    const { count } = await supabaseAdmin
+    const { count } = await supabaseAnon
       .from("send_events")
       .select("id", { count: "exact", head: true })
       .eq("ip_hash", ipHash)
@@ -68,7 +70,7 @@ export const sendAnonymousMessage = createServerFn({ method: "POST" })
       return { ok: false as const, reason: "rate_limited" as const };
     }
 
-    await supabaseAdmin.from("send_events").insert({ ip_hash: ipHash });
+    await supabaseAnon.from("send_events").insert({ ip_hash: ipHash });
 
     // --- moderation ---
     if (isFlagged(content)) {
@@ -76,7 +78,7 @@ export const sendAnonymousMessage = createServerFn({ method: "POST" })
     }
 
     // --- blocked senders: silently drop so the sender learns nothing ---
-    const { data: blocked } = await supabaseAdmin
+    const { data: blocked } = await supabaseAnon
       .from("blocked_senders")
       .select("id")
       .eq("user_id", profile.id)
@@ -85,7 +87,7 @@ export const sendAnonymousMessage = createServerFn({ method: "POST" })
 
     if (blocked) return { ok: true as const };
 
-    const { error } = await supabaseAdmin.from("messages").insert({
+    const { error } = await supabaseAnon.from("messages").insert({
       recipient_id: profile.id,
       content,
       is_flagged: false,
@@ -198,6 +200,7 @@ export const ensureProfile = createServerFn({ method: "POST" })
 
     const displayName = (data.displayName ?? "").trim() || "Someone";
 
+    let lastError: string | null = null;
     for (let attempt = 0; attempt < 5; attempt++) {
       const slug = randomSlug(displayName);
       const { data: created, error } = await supabase
@@ -206,7 +209,8 @@ export const ensureProfile = createServerFn({ method: "POST" })
         .select("id, display_name, slug, link_enabled")
         .single();
       if (!error && created) return created;
+      if (error && error.code !== "23505") lastError = error.message;
     }
 
-    throw new Error("Could not create profile");
+    throw new Error(lastError ? `Could not create profile: ${lastError}` : "Could not create profile");
   });
