@@ -200,6 +200,7 @@ export const ensureProfile = createServerFn({ method: "POST" })
 
     const displayName = (data.displayName ?? "").trim() || "Someone";
 
+    let lastError: string | null = null;
     for (let attempt = 0; attempt < 5; attempt++) {
       const slug = randomSlug(displayName);
       const { data: created, error } = await supabase
@@ -208,7 +209,8 @@ export const ensureProfile = createServerFn({ method: "POST" })
         .select("id, display_name, slug, link_enabled")
         .single();
       if (!error && created) return created;
+      if (error && error.code !== "23505") lastError = error.message;
     }
 
-    throw new Error("Could not create profile");
+    throw new Error(lastError ? `Could not create profile: ${lastError}` : "Could not create profile");
   });
