@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireExternalAuth as requireSupabaseAuth } from "./supabase-external";
 import { isFlagged } from "./moderation";
 
 const RATE_LIMIT_MAX = 5;
@@ -17,7 +17,8 @@ async function hashIp(ip: string): Promise<string> {
 export const getPublicProfile = createServerFn({ method: "GET" })
   .inputValidator((data: { slug: string }) => data)
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getExternalAdmin } = await import("./external-admin.server");
+    const supabaseAdmin = getExternalAdmin();
     const { data: profile } = await supabaseAdmin
       .from("profiles")
       .select("display_name, slug, link_enabled")
@@ -38,7 +39,8 @@ export const sendAnonymousMessage = createServerFn({ method: "POST" })
       return { ok: false as const, reason: "too_long" as const };
     }
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getExternalAdmin } = await import("./external-admin.server");
+    const supabaseAdmin = getExternalAdmin();
 
     const { data: profile } = await supabaseAdmin
       .from("profiles")
