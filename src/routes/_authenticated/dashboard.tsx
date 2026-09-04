@@ -1,13 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { toast } from "sonner";
-import { Ban, Copy, Flag, Instagram, MessageCircleHeart, Share2, Trash2 } from "lucide-react";
+import { Copy, Loader2, MessageCircleHeart, RefreshCw } from "lucide-react";
 
 import { AppHeader } from "@/components/chupi/AppHeader";
 import { BottomNav } from "@/components/chupi/BottomNav";
 import { SafetyFooter } from "@/components/chupi/Brand";
+import { MessageCard, type InboxMessage } from "@/components/chupi/MessageCard";
+import { ShareHub } from "@/components/chupi/ShareHub";
 import { StoryCardDialog } from "@/components/chupi/StoryCardDialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +25,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
 import { blockMessageSender, ensureProfile, reportMessage } from "@/lib/chupi.functions";
-
+import { useLocalIdSet } from "@/lib/chupi-ui";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -38,14 +42,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
-type Message = {
-  id: string;
-  content: string;
-  created_at: string;
-  is_reported: boolean;
-  reply: string | null;
-  sender_hash: string | null;
-};
+type Message = InboxMessage;
 
 const REPORT_REASONS = [
   { value: "harassment", label: "Harassment" },
@@ -55,6 +52,13 @@ const REPORT_REASONS = [
   { value: "other", label: "Other" },
 ] as const;
 
+const FILTERS = [
+  { key: "all", label: "All Whispers" },
+  { key: "unread", label: "Unread" },
+  { key: "saved", label: "Saved" },
+] as const;
+type FilterKey = (typeof FILTERS)[number]["key"];
+
 function Dashboard() {
   const queryClient = useQueryClient();
   const ensure = useServerFn(ensureProfile);
@@ -63,6 +67,11 @@ function Dashboard() {
   const [storyMessage, setStoryMessage] = useState<Message | null>(null);
   const [reportTarget, setReportTarget] = useState<Message | null>(null);
   const [reportReason, setReportReason] = useState<string>("harassment");
+  const [filter, setFilter] = useState<FilterKey>("all");
+
+  const readSet = useLocalIdSet("chupi:read");
+  const savedSet = useLocalIdSet("chupi:saved");
+  const sharedSet = useLocalIdSet("chupi:shared");
 
   const profileQuery = useQuery({
     queryKey: ["profile"],
@@ -121,29 +130,24 @@ function Dashboard() {
       ),
   });
 
-
   const profile = profileQuery.data;
   const link =
     typeof window !== "undefined" && profile ? `${window.location.origin}/u/${profile.slug}` : "";
 
+  const messages = useMemo(() => messagesQuery.data ?? [], [messagesQuery.data]);
+  const unreadCount = messages.filter((m) => !readSet.ids.has(m.id)).length;
+  const sharedCount = messages.filter((m) => sharedSet.ids.has(m.id)).length;
+
+  const visible = useMemo(() => {
+    if (filter === "unread") return messages.filter((m) => !readSet.ids.has(m.id));
+    if (filter === "saved") return messages.filter((m) => savedSet.ids.has(m.id));
+    return messages;
+  }, [messages, filter, readSet.ids, savedSet.ids]);
+
   async function copyLink() {
+    if (!link) return;
     await navigator.clipboard.writeText(link);
     toast.success("Link copied — go paste it in your bio!");
-  }
-
-  async function shareToInstagram() {
-    const text = `Send me an anonymous message on Chupi 💜 ${link}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "My Chupi link", text, url: link });
-        return;
-      } catch {
-        /* user dismissed */
-      }
-    }
-    await navigator.clipboard.writeText(text);
-    toast.success("Link copied — add it as a sticker in your Instagram story!");
-    window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -151,136 +155,128 @@ function Dashboard() {
       <AppHeader />
 
       <main className="mx-auto w-full max-w-3xl px-4 sm:px-5">
-        <section className="rounded-3xl border border-border/70 bg-card-gradient p-5 shadow-soft sm:p-6">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Your Chupi link
-          </p>
-          <p className="mt-2 break-all font-display text-base font-semibold sm:text-lg">
-            {profileQuery.isLoading ? "Loading…" : link}
-          </p>
-          {profile && !profile.link_enabled && (
-            <p className="mt-2 text-sm text-destructive">
-              Your link is currently turned off — no one can send you messages.
-            </p>
-          )}
-          <div className="mt-4 flex flex-col gap-2 sm:mt-5 sm:flex-row">
+        <ShareHub
+          displayName={profile?.display_name ?? ""}
+          slug={profile?.slug}
+          link={link}
+          linkEnabled={profile?.link_enabled ?? true}
+          loading={profileQuery.isLoading}
+          stats={{ total: messages.length, unread: unreadCount, shared: sharedCount }}
+        />
+
+        <section className="mt-7 sm:mt-9">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <h1 className="font-display text-2xl font-bold">Inbox</h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Newest first. Nothing here is linked to a sender.
+              </p>
+            </div>
             <Button
-              onClick={copyLink}
-              disabled={!link}
-              className="h-11 rounded-full bg-brand-gradient shadow-soft active:scale-[0.98] sm:flex-1"
+              variant="ghost"
+              size="icon"
+              aria-label="Refresh messages"
+              onClick={() => messagesQuery.refetch()}
+              className="size-10 shrink-0 rounded-full text-muted-foreground transition-transform duration-150 active:scale-[0.94]"
             >
-              <Copy className="size-4" /> Copy link
-            </Button>
-            <Button
-              onClick={shareToInstagram}
-              disabled={!link}
-              variant="outline"
-              className="h-11 rounded-full bg-background/60 active:scale-[0.98] sm:flex-1"
-            >
-              <Instagram className="size-4" /> Share to story
+              <RefreshCw
+                className={cn("size-4", messagesQuery.isFetching && "animate-spin")}
+              />
             </Button>
           </div>
-        </section>
 
-        <section className="mt-6 sm:mt-8">
-          <h1 className="font-display text-xl font-bold">Inbox</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Newest first. Nothing here is linked to a sender.
-          </p>
+          {/* Filter pills with a sliding active indicator */}
+          <div className="mt-4 flex w-full gap-1 rounded-full border border-border/60 bg-card/70 p-1">
+            {FILTERS.map((f) => {
+              const active = filter === f.key;
+              return (
+                <button
+                  key={f.key}
+                  type="button"
+                  onClick={() => setFilter(f.key)}
+                  className={cn(
+                    "relative flex-1 rounded-full px-3 py-2 text-xs font-semibold transition-colors duration-200 active:scale-[0.97] sm:text-sm",
+                    active ? "text-primary-foreground" : "text-muted-foreground",
+                  )}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="filter-pill"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                      className="absolute inset-0 rounded-full bg-brand-gradient shadow-soft"
+                    />
+                  )}
+                  <span className="relative">
+                    {f.label}
+                    {f.key === "unread" && unreadCount > 0 && ` · ${unreadCount}`}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-          <div className="mt-4 space-y-3 sm:mt-5">
+          <div className="mt-4 space-y-3.5 sm:mt-5">
             {messagesQuery.isLoading && (
-              <div className="rounded-3xl border border-border/70 bg-card/70 p-5 text-sm text-muted-foreground sm:p-6">
-                Loading your messages…
+              <div className="flex items-center gap-2 rounded-3xl border border-border/60 bg-card/70 p-6 text-sm text-muted-foreground">
+                <Loader2 className="size-4 animate-spin" /> Gathering your whispers…
               </div>
             )}
 
-            {messagesQuery.data?.length === 0 && (
-              <div className="rounded-3xl border border-dashed border-border bg-card/60 p-7 text-center sm:p-10">
+            <AnimatePresence initial={false} mode="popLayout">
+              {visible.map((m, i) => (
+                <MessageCard
+                  key={m.id}
+                  message={m}
+                  index={i}
+                  saved={savedSet.ids.has(m.id)}
+                  unread={!readSet.ids.has(m.id)}
+                  onSeen={() => readSet.add(m.id)}
+                  onToggleSave={() => savedSet.toggle(m.id)}
+                  onShare={() => {
+                    readSet.add(m.id);
+                    sharedSet.add(m.id);
+                    setStoryMessage(m);
+                  }}
+                  onReport={() => {
+                    setReportReason("harassment");
+                    setReportTarget(m);
+                  }}
+                  onBlock={() => blockMutation.mutate(m.id)}
+                  onDelete={() => deleteMutation.mutate(m.id)}
+                />
+              ))}
+            </AnimatePresence>
+
+            {!messagesQuery.isLoading && visible.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-3xl border border-dashed border-border bg-card/60 p-8 text-center sm:p-10"
+              >
                 <MessageCircleHeart className="mx-auto size-8 text-primary" />
                 <p className="mt-3 font-display text-lg font-semibold">
-                  Your Chupi is quiet… for now 👀
+                  {filter === "all"
+                    ? "Your Chupi is quiet… for now 👀"
+                    : filter === "unread"
+                      ? "You're all caught up ✨"
+                      : "Nothing saved yet"}
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Share your link and the first letter will land right here.
+                  {filter === "saved"
+                    ? "Tap the bookmark on a whisper to keep it here."
+                    : "Share your link and the first letter will land right here."}
                 </p>
-                <Button
-                  onClick={copyLink}
-                  disabled={!link}
-                  className="mt-5 h-11 rounded-full bg-brand-gradient shadow-soft active:scale-[0.98]"
-                >
-                  <Copy className="size-4" /> Share your Chupi link
-                </Button>
-              </div>
-            )}
-
-            {messagesQuery.data?.map((m) => (
-              <article
-                key={m.id}
-                className="letter-card rounded-3xl border border-border/70 bg-paper p-4 pt-7 shadow-soft sm:p-5 sm:pt-8"
-              >
-                <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed sm:text-base">
-                  {m.content}
-                </p>
-                {m.reply && (
-                  <p className="mt-3 rounded-2xl bg-accent/60 p-3 text-sm text-accent-foreground">
-                    <span className="font-medium">Your reply: </span>
-                    {m.reply}
-                  </p>
+                {filter !== "saved" && (
+                  <Button
+                    onClick={copyLink}
+                    disabled={!link}
+                    className="mt-5 h-11 rounded-full bg-brand-gradient shadow-soft transition-transform duration-150 active:scale-[0.98]"
+                  >
+                    <Copy className="size-4" /> Share your Chupi link
+                  </Button>
                 )}
-
-                <div className="mt-4 flex items-center gap-1.5 border-t border-border/60 pt-3">
-                  <Button
-                    size="sm"
-                    className="h-9 rounded-full bg-primary px-3.5 text-xs text-primary-foreground shadow-soft transition-colors hover:bg-primary/90 active:scale-[0.97] sm:text-sm"
-                    onClick={() => setStoryMessage(m)}
-                  >
-                    <Share2 className="size-4" /> Share to Story
-                  </Button>
-                  <span className="ml-2 truncate text-[11px] text-muted-foreground sm:text-xs">
-                    {new Date(m.created_at).toLocaleString()}
-                    {m.is_reported && " · reported"}
-                  </span>
-
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="ml-auto size-9 rounded-full p-0"
-                    aria-label="Block this sender"
-                    title="Block sender"
-                    disabled={blockMutation.isPending}
-                    onClick={() => blockMutation.mutate(m.id)}
-                  >
-                    <Ban className="size-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="size-9 rounded-full p-0"
-                    aria-label="Report this message"
-                    title="Report"
-                    disabled={m.is_reported}
-                    onClick={() => {
-                      setReportReason("harassment");
-                      setReportTarget(m);
-                    }}
-                  >
-                    <Flag className="size-4" />
-                  </Button>
-
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="size-9 rounded-full p-0 text-destructive hover:text-destructive"
-                    aria-label="Delete this message"
-                    title="Delete"
-                    onClick={() => deleteMutation.mutate(m.id)}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                </div>
-              </article>
-            ))}
+              </motion.div>
+            )}
           </div>
         </section>
 
@@ -331,8 +327,7 @@ function Dashboard() {
         </DialogContent>
       </Dialog>
 
-
-      <BottomNav />
+      <BottomNav unreadCount={unreadCount} />
     </div>
   );
 }
