@@ -36,17 +36,28 @@ export const Route = createFileRoute("/u/$slug")({
   component: PublicPage,
 });
 
+const PROMPTS = [
+  "A song that reminds you of me? 🎶",
+  "One honest compliment you've never said 🤍",
+  "What was your genuine first impression of me? ✨",
+  "Something you wish I knew about you 💭",
+  "A memory of us you still think about 📼",
+  "What should I absolutely stop doing? 😅",
+  "If you could tell me one secret, what is it? 🔒",
+];
+
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="pt-safe mx-auto flex w-full max-w-3xl justify-center px-4 py-5 sm:px-5 sm:py-6">
         <Brand />
       </header>
-      <main className="flex-1 px-4 sm:px-5">{children}</main>
+      <main className="pb-nav flex-1 px-4 sm:px-5">{children}</main>
       <SafetyFooter />
     </div>
   );
 }
+
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
