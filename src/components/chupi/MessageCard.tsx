@@ -69,14 +69,16 @@ export function MessageCard({
 
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -left-1 -top-6 select-none font-display text-[5.5rem] leading-none text-primary/10"
+        className="animate-quote-drop pointer-events-none absolute -left-1 -top-6 select-none font-display text-[5.5rem] leading-none text-primary/10"
+        style={{ animationDelay: `${Math.min(index, 8) * 0.05 + 0.12}s` }}
       >
         &ldquo;
       </span>
 
-      <p className="relative whitespace-pre-wrap break-words pl-6 font-display text-lg font-semibold leading-relaxed text-foreground sm:text-xl">
+      <p className="relative whitespace-pre-wrap break-words pl-6 font-display text-lg font-semibold leading-relaxed tracking-tight text-foreground sm:text-xl">
         {m.content}
       </p>
+
 
       {m.reply && (
         <p className="mt-4 rounded-2xl bg-accent/60 p-3.5 text-sm leading-relaxed text-accent-foreground">

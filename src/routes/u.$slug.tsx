@@ -36,17 +36,28 @@ export const Route = createFileRoute("/u/$slug")({
   component: PublicPage,
 });
 
+const PROMPTS = [
+  "A song that reminds you of me? 🎶",
+  "One honest compliment you've never said 🤍",
+  "What was your genuine first impression of me? ✨",
+  "Something you wish I knew about you 💭",
+  "A memory of us you still think about 📼",
+  "What should I absolutely stop doing? 😅",
+  "If you could tell me one secret, what is it? 🔒",
+];
+
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="pt-safe mx-auto flex w-full max-w-3xl justify-center px-4 py-5 sm:px-5 sm:py-6">
         <Brand />
       </header>
-      <main className="flex-1 px-4 sm:px-5">{children}</main>
+      <main className="pb-nav flex-1 px-4 sm:px-5">{children}</main>
       <SafetyFooter />
     </div>
   );
 }
+
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
@@ -120,16 +131,17 @@ function PublicPage() {
     return (
       <Shell>
         <Card>
-          <div className="text-center">
-            <span className="mx-auto flex size-14 items-center justify-center rounded-3xl bg-card shadow-soft sm:size-16">
+          <div className="animate-blur-in text-center">
+            <span className="animate-letter-float mx-auto flex size-14 items-center justify-center rounded-3xl bg-card shadow-soft sm:size-16">
               <EnvelopeMark className="size-9 sm:size-10" />
             </span>
-            <h1 className="mt-4 font-display text-xl font-bold leading-snug sm:text-2xl">
-              Your message was sent anonymously!
+            <h1 className="mt-4 font-display text-xl font-bold leading-snug tracking-tight sm:text-2xl">
+              Whisper delivered into the quiet 💌
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
               {profile.display_name} will never know it was you. 💜
             </p>
+
             <Button
               className="mt-6 h-11 rounded-full bg-brand-gradient px-6 shadow-soft active:scale-[0.98]"
               onClick={() => setStatus("idle")}
@@ -151,20 +163,43 @@ function PublicPage() {
   return (
     <Shell>
       <Card>
-        <h1 className="text-center font-display text-xl font-bold leading-snug sm:text-2xl">
-          Send <span className="text-primary">{profile.display_name}</span> an anonymous
+        <h1 className="text-center font-display text-xl font-bold leading-snug tracking-tight sm:text-2xl">
+          Send <span className="text-shimmer">{profile.display_name}</span> an anonymous
           message
         </h1>
         <p className="mt-2 text-center text-sm text-muted-foreground">
           They'll never know who wrote it.
         </p>
 
-
         {status === "sending" && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-card/80 backdrop-blur-[2px]">
             <EnvelopeMark className="size-16 animate-envelope-send" />
           </div>
         )}
+
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={shuffle}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border/70 bg-background/70 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-wide text-foreground transition-transform duration-150 active:scale-[0.95]"
+          >
+            <Shuffle className="size-3.5 text-primary" /> Shuffle idea
+          </button>
+          {ideas.map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => {
+                setContent(p);
+                if (status !== "idle") setStatus("idle");
+              }}
+              className="rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors duration-150 hover:border-primary/40 hover:text-foreground active:scale-[0.96]"
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+
 
         <Textarea
           value={content}

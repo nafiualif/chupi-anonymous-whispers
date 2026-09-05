@@ -1,7 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Brand, SafetyFooter } from "@/components/chupi/Brand";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Lock } from "lucide-react";
+import {
+  ArrowUpRight,
+  Lock,
+  ShieldCheck,
+  Sparkles,
+  ToggleLeft,
+  VenetianMask,
+} from "lucide-react";
+
 
 
 const SITE_URL = "https://chupi-anonymous-whispers.lovable.app";
@@ -71,20 +79,29 @@ const promises = [
   {
     title: "Truly anonymous",
     body: "Senders are never asked for a name, an email, or anything else.",
+    icon: VenetianMask,
+    tint: "bg-primary/12 text-primary",
   },
   {
     title: "Filtered by default",
     body: "Hate speech, harassment and sexual content never reach your inbox.",
+    icon: ShieldCheck,
+    tint: "bg-forest/12 text-forest",
   },
   {
     title: "Reply publicly",
     body: "Turn any message into a clean card you can download and share.",
+    icon: Sparkles,
+    tint: "bg-sand text-forest",
   },
   {
     title: "Off whenever you want",
     body: "One toggle in settings quietly switches your link off.",
+    icon: ToggleLeft,
+    tint: "bg-primary/12 text-primary",
   },
 ];
+
 
 function Home() {
   return (
@@ -102,19 +119,26 @@ function Home() {
       <main className="mx-auto w-full max-w-5xl px-5 sm:px-8">
         {/* Hero */}
         <section className="pt-6 sm:pt-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-widest text-forest">
+          <span className="animate-blur-in inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-widest text-forest">
             <span className="size-1.5 rounded-full bg-primary" />
             Honest words, zero pressure
           </span>
 
-          <h1 className="mt-6 max-w-3xl font-display text-[2.35rem] font-bold leading-[1.05] tracking-tight sm:text-6xl">
-            Chupi — say what you <span className="text-primary">really mean</span>, anonymously.
+          <h1
+            className="animate-blur-in mt-6 max-w-3xl font-display text-[2.35rem] font-bold leading-[1.05] tracking-tight sm:text-6xl"
+            style={{ animationDelay: "0.08s" }}
+          >
+            Chupi — say what you <span className="text-shimmer">really mean</span>, anonymously.
           </h1>
 
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p
+            className="animate-blur-in mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+            style={{ animationDelay: "0.18s" }}
+          >
             One little link, sealed like a letter. Share it, and anyone can write you an anonymous
             note — kindly, safely, and without signing up.
           </p>
+
 
           <div className="mt-8 max-w-sm">
             <Link to="/auth" search={{ mode: "signup" }} className="block">
@@ -155,8 +179,8 @@ function Home() {
 
         {/* Preview cards */}
         <section className="relative mt-14 sm:mt-20">
-          <div className="relative mx-auto max-w-md">
-            <div className="rotate-[-1.5deg] rounded-3xl border border-border bg-card p-6 shadow-soft">
+          <div className="relative mx-auto max-w-md [perspective:1200px]">
+            <div className="rotate-[-1.5deg] rounded-3xl border border-border bg-card p-6 shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-transform duration-500 hover:rotate-0 hover:-translate-y-1.5 hover:[transform:rotateX(4deg)]">
               <p className="text-[0.62rem] font-semibold uppercase tracking-widest text-muted-foreground">
                 Anonymous
               </p>
@@ -164,7 +188,8 @@ function Home() {
                 “You have no idea how much your kindness changed my semester.”
               </p>
             </div>
-            <div className="mt-[-1rem] ml-6 rotate-[2deg] rounded-3xl bg-forest p-6 text-forest-foreground shadow-lift">
+            <div className="mt-[-1rem] ml-6 rotate-[2deg] rounded-3xl bg-forest p-6 text-forest-foreground shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-transform duration-500 hover:rotate-0 hover:-translate-y-1.5">
+
               <p className="text-[0.62rem] font-semibold uppercase tracking-widest opacity-70">
                 Your reply
               </p>
@@ -180,9 +205,10 @@ function Home() {
           <p className="text-xs font-semibold uppercase tracking-widest text-primary">
             How it works
           </p>
-          <h2 className="mt-3 max-w-lg font-display text-3xl font-bold leading-tight sm:text-4xl">
-            Three quiet steps to honest letters.
+          <h2 className="mt-3 max-w-lg font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+            Three quiet steps to <span className="text-shimmer">honest letters</span>.
           </h2>
+
 
           <ol className="mt-8 border-t border-border">
             {steps.map((s) => (
@@ -223,12 +249,21 @@ function Home() {
         {/* Promises */}
         <section className="mt-16 grid gap-4 sm:mt-20 sm:grid-cols-2">
           {promises.map((f) => (
-            <div key={f.title} className="rounded-3xl border border-border bg-card p-6">
-              <h2 className="font-display text-xl font-semibold">{f.title}</h2>
+            <div
+              key={f.title}
+              className="rounded-3xl border border-border bg-card p-6 shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-transform duration-300 hover:-translate-y-1"
+            >
+              <span
+                className={`mb-4 inline-flex size-11 items-center justify-center rounded-2xl ${f.tint}`}
+              >
+                <f.icon className="size-5" aria-hidden="true" />
+              </span>
+              <h2 className="font-display text-xl font-semibold tracking-tight">{f.title}</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
             </div>
           ))}
         </section>
+
 
         <p className="mt-10 flex items-center gap-2 text-xs text-muted-foreground">
           <Lock className="size-3.5 shrink-0 text-primary" />
