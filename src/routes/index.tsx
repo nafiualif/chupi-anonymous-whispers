@@ -240,12 +240,21 @@ function Home() {
         {/* Promises */}
         <section className="mt-16 grid gap-4 sm:mt-20 sm:grid-cols-2">
           {promises.map((f) => (
-            <div key={f.title} className="rounded-3xl border border-border bg-card p-6">
-              <h2 className="font-display text-xl font-semibold">{f.title}</h2>
+            <div
+              key={f.title}
+              className="rounded-3xl border border-border bg-card p-6 shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-transform duration-300 hover:-translate-y-1"
+            >
+              <span
+                className={`mb-4 inline-flex size-11 items-center justify-center rounded-2xl ${f.tint}`}
+              >
+                <f.icon className="size-5" aria-hidden="true" />
+              </span>
+              <h2 className="font-display text-xl font-semibold tracking-tight">{f.title}</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
             </div>
           ))}
         </section>
+
 
         <p className="mt-10 flex items-center gap-2 text-xs text-muted-foreground">
           <Lock className="size-3.5 shrink-0 text-primary" />
