@@ -205,9 +205,10 @@ function Home() {
           <p className="text-xs font-semibold uppercase tracking-widest text-primary">
             How it works
           </p>
-          <h2 className="mt-3 max-w-lg font-display text-3xl font-bold leading-tight sm:text-4xl">
-            Three quiet steps to honest letters.
+          <h2 className="mt-3 max-w-lg font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+            Three quiet steps to <span className="text-shimmer">honest letters</span>.
           </h2>
+
 
           <ol className="mt-8 border-t border-border">
             {steps.map((s) => (
