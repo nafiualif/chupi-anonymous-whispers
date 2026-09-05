@@ -15,7 +15,7 @@ import { monogram } from "@/lib/chupi-ui";
 
 type Props = {
   displayName: string;
-  slug?: string;
+  slug?: string | undefined;
   link: string;
   linkEnabled: boolean;
   loading: boolean;
