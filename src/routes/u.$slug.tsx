@@ -131,16 +131,17 @@ function PublicPage() {
     return (
       <Shell>
         <Card>
-          <div className="text-center">
-            <span className="mx-auto flex size-14 items-center justify-center rounded-3xl bg-card shadow-soft sm:size-16">
+          <div className="animate-blur-in text-center">
+            <span className="animate-letter-float mx-auto flex size-14 items-center justify-center rounded-3xl bg-card shadow-soft sm:size-16">
               <EnvelopeMark className="size-9 sm:size-10" />
             </span>
-            <h1 className="mt-4 font-display text-xl font-bold leading-snug sm:text-2xl">
-              Your message was sent anonymously!
+            <h1 className="mt-4 font-display text-xl font-bold leading-snug tracking-tight sm:text-2xl">
+              Whisper delivered into the quiet 💌
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
               {profile.display_name} will never know it was you. 💜
             </p>
+
             <Button
               className="mt-6 h-11 rounded-full bg-brand-gradient px-6 shadow-soft active:scale-[0.98]"
               onClick={() => setStatus("idle")}
