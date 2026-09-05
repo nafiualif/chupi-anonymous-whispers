@@ -163,20 +163,43 @@ function PublicPage() {
   return (
     <Shell>
       <Card>
-        <h1 className="text-center font-display text-xl font-bold leading-snug sm:text-2xl">
-          Send <span className="text-primary">{profile.display_name}</span> an anonymous
+        <h1 className="text-center font-display text-xl font-bold leading-snug tracking-tight sm:text-2xl">
+          Send <span className="text-shimmer">{profile.display_name}</span> an anonymous
           message
         </h1>
         <p className="mt-2 text-center text-sm text-muted-foreground">
           They'll never know who wrote it.
         </p>
 
-
         {status === "sending" && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-card/80 backdrop-blur-[2px]">
             <EnvelopeMark className="size-16 animate-envelope-send" />
           </div>
         )}
+
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={shuffle}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border/70 bg-background/70 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-wide text-foreground transition-transform duration-150 active:scale-[0.95]"
+          >
+            <Shuffle className="size-3.5 text-primary" /> Shuffle idea
+          </button>
+          {ideas.map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => {
+                setContent(p);
+                if (status !== "idle") setStatus("idle");
+              }}
+              className="rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors duration-150 hover:border-primary/40 hover:text-foreground active:scale-[0.96]"
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+
 
         <Textarea
           value={content}
