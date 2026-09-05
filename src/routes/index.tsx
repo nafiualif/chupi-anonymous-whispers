@@ -119,19 +119,26 @@ function Home() {
       <main className="mx-auto w-full max-w-5xl px-5 sm:px-8">
         {/* Hero */}
         <section className="pt-6 sm:pt-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-widest text-forest">
+          <span className="animate-blur-in inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 text-[0.68rem] font-semibold uppercase tracking-widest text-forest">
             <span className="size-1.5 rounded-full bg-primary" />
             Honest words, zero pressure
           </span>
 
-          <h1 className="mt-6 max-w-3xl font-display text-[2.35rem] font-bold leading-[1.05] tracking-tight sm:text-6xl">
-            Chupi — say what you <span className="text-primary">really mean</span>, anonymously.
+          <h1
+            className="animate-blur-in mt-6 max-w-3xl font-display text-[2.35rem] font-bold leading-[1.05] tracking-tight sm:text-6xl"
+            style={{ animationDelay: "0.08s" }}
+          >
+            Chupi — say what you <span className="text-shimmer">really mean</span>, anonymously.
           </h1>
 
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p
+            className="animate-blur-in mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+            style={{ animationDelay: "0.18s" }}
+          >
             One little link, sealed like a letter. Share it, and anyone can write you an anonymous
             note — kindly, safely, and without signing up.
           </p>
+
 
           <div className="mt-8 max-w-sm">
             <Link to="/auth" search={{ mode: "signup" }} className="block">
