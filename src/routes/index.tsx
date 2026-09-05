@@ -1,7 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Brand, SafetyFooter } from "@/components/chupi/Brand";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, Lock } from "lucide-react";
+import {
+  ArrowUpRight,
+  Lock,
+  ShieldCheck,
+  Sparkles,
+  ToggleLeft,
+  VenetianMask,
+} from "lucide-react";
+
 
 
 const SITE_URL = "https://chupi-anonymous-whispers.lovable.app";
