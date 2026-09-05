@@ -71,20 +71,29 @@ const promises = [
   {
     title: "Truly anonymous",
     body: "Senders are never asked for a name, an email, or anything else.",
+    icon: VenetianMask,
+    tint: "bg-primary/12 text-primary",
   },
   {
     title: "Filtered by default",
     body: "Hate speech, harassment and sexual content never reach your inbox.",
+    icon: ShieldCheck,
+    tint: "bg-forest/12 text-forest",
   },
   {
     title: "Reply publicly",
     body: "Turn any message into a clean card you can download and share.",
+    icon: Sparkles,
+    tint: "bg-sand text-forest",
   },
   {
     title: "Off whenever you want",
     body: "One toggle in settings quietly switches your link off.",
+    icon: ToggleLeft,
+    tint: "bg-primary/12 text-primary",
   },
 ];
+
 
 function Home() {
   return (
