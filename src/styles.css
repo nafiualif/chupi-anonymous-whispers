@@ -294,11 +294,85 @@
 
 /* Reserves room for the fixed mobile bottom nav */
 @utility pb-nav {
-  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(9rem + env(safe-area-inset-bottom, 0px));
   @media (width >= 48rem) {
-    padding-bottom: 2.5rem;
+    padding-bottom: 3rem;
   }
 }
+
+/* Editorial text micro-animations */
+@utility animate-blur-in {
+  animation: blur-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility animate-quote-drop {
+  animation: quote-drop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility text-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    var(--seal) 0%,
+    color-mix(in oklab, var(--pastel-coral) 80%, var(--seal)) 35%,
+    var(--seal) 60%,
+    var(--seal-ring) 100%
+  );
+  background-size: 220% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer-pan 6s ease-in-out infinite;
+}
+
+@keyframes shimmer-pan {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes blur-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes quote-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes confetti-burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--cx), var(--cy)) scale(0.4);
+  }
+}
+
+@utility animate-confetti {
+  animation: confetti-burst 0.75s ease-out forwards;
+}
+
 
 @layer base {
   * {
