@@ -12,7 +12,8 @@ import {
 
 
 
-const SITE_URL = "https://chupi-anonymous-whispers.lovable.app";
+const SITE_URL = "https://chupi.lovable.app";
+const LOGO_URL = `${SITE_URL}/logo.png`;
 const HOME_TITLE = "Chupi — Anonymous Messages & Secret Whispers";
 const HOME_DESCRIPTION =
   "Chupi gives you a personal link so friends can send you anonymous messages and questions. Honest, filtered for hate and harassment, and you can switch your link off anytime.";
@@ -29,9 +30,14 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: HOME_TITLE },
       { property: "og:description", content: HOME_DESCRIPTION },
       { property: "og:url", content: `${SITE_URL}/` },
-      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: LOGO_URL },
+      { property: "og:image:width", content: "512" },
+      { property: "og:image:height", content: "512" },
+      { property: "og:image:type", content: "image/png" },
+      { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: HOME_TITLE },
       { name: "twitter:description", content: HOME_DESCRIPTION },
+      { name: "twitter:image", content: LOGO_URL },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/` }],
     scripts: [
