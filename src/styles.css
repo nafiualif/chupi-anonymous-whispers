@@ -166,6 +166,9 @@
   --gradient-card: linear-gradient(140deg, oklch(0.26 0.016 250) 0%, oklch(0.24 0.016 250) 100%);
   --shadow-soft: 0 8px 24px -16px oklch(0.05 0.01 250 / 0.6);
   --shadow-lift: 0 20px 45px -26px oklch(0.05 0.01 250 / 0.7);
+  --shadow-glass: 0 1px 2px oklch(0.05 0.01 250 / 0.3), 0 12px 32px -18px oklch(0.05 0.01 250 / 0.45);
+  --glass-surface: oklch(0.25 0.016 250 / 0.6);
+  --glass-border: oklch(1 0 0 / 0.1);
 
   --forest: oklch(0.3834 0.0562 172.4);
   --forest-foreground: oklch(1 0 0);
