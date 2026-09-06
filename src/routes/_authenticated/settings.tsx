@@ -256,7 +256,7 @@ function ProfileSection({
       {link && (
         <a
           href={link}
-          className="mt-3 flex items-center gap-2 rounded-2xl border border-border/60 bg-card/60 px-4 py-3 text-sm text-primary underline-offset-4 hover:underline"
+          className="mt-3 flex items-center gap-2 rounded-2xl border border-border/60 bg-card/60 px-4 py-3 backdrop-blur-sm text-sm text-primary underline-offset-4 hover:underline"
         >
           <Link2 className="size-4 shrink-0" />
           <span className="truncate">{link}</span>
@@ -376,7 +376,7 @@ function PublicLinkSection({
       </div>
 
       {/* toggle */}
-      <div className="flex items-start justify-between gap-4 rounded-2xl border border-border/60 bg-card/60 p-4">
+      <div className="flex items-start justify-between gap-4 rounded-2xl border border-border/60 bg-card/60 p-4 backdrop-blur-sm">
         <div>
           <Label htmlFor="link-toggle" className="font-display text-sm font-semibold">
             Allow anonymous messages
@@ -409,7 +409,7 @@ function PrivacySection({
 }) {
   return (
     <div className="space-y-3 pt-2">
-      <div className="flex items-start justify-between gap-4 rounded-2xl border border-border/60 bg-card/60 p-4">
+      <div className="flex items-start justify-between gap-4 rounded-2xl border border-border/60 bg-card/60 p-4 backdrop-blur-sm">
         <div>
           <Label htmlFor="privacy-toggle" className="font-display text-sm font-semibold">
             Public message link
