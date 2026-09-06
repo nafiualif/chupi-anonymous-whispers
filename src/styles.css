@@ -281,6 +281,14 @@
   color: transparent;
 }
 
+/* Frosted glass surface for premium cards and containers */
+@utility glass-card {
+  background-color: var(--glass-surface);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
 @utility shadow-soft {
   box-shadow: var(--shadow-soft);
 }
