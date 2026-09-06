@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Lock, Send } from "lucide-react";
+import { Lock, Send, Shuffle } from "lucide-react";
 
 import { Brand, SafetyFooter } from "@/components/chupi/Brand";
 import { EnvelopeMark } from "@/components/chupi/EnvelopeMark";
@@ -76,6 +76,12 @@ function PublicPage() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "blocked" | "limited" | "error">(
     "idle",
   );
+  const [ideas, setIdeas] = useState<string[]>(() => PROMPTS.slice(0, 3));
+
+  function shuffle() {
+    const pool = [...PROMPTS].sort(() => Math.random() - 0.5);
+    setIdeas(pool.slice(0, 3));
+  }
 
   if (!profile) {
     return (
