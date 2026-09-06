@@ -56,7 +56,7 @@ export function MessageCard({
       onMouseEnter={onSeen}
       onTouchStart={onSeen}
       className={cn(
-        "group relative overflow-hidden rounded-3xl border border-border/60 bg-card p-5 shadow-soft transition-transform duration-150 active:scale-[0.99] sm:p-6",
+        "glass-card group relative overflow-hidden rounded-3xl p-5 transition-transform duration-150 active:scale-[0.99] sm:p-6",
         unread && "ring-1 ring-primary/25",
       )}
     >
