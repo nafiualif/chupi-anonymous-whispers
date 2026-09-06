@@ -186,7 +186,7 @@ function Dashboard() {
           </div>
 
           {/* Filter pills with a sliding active indicator */}
-          <div className="mt-4 flex w-full gap-1 rounded-full border border-border/60 bg-card/70 p-1">
+          <div className="mt-4 flex w-full gap-1 rounded-full border border-border/60 bg-card/70 p-1 backdrop-blur-md">
             {FILTERS.map((f) => {
               const active = filter === f.key;
               return (
@@ -217,7 +217,7 @@ function Dashboard() {
 
           <div className="mt-4 space-y-3.5 sm:mt-5">
             {messagesQuery.isLoading && (
-              <div className="flex items-center gap-2 rounded-3xl border border-border/60 bg-card/70 p-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 rounded-3xl border border-border/60 bg-card/70 p-6 backdrop-blur-md text-sm text-muted-foreground">
                 <Loader2 className="size-4 animate-spin" /> Gathering your whispers…
               </div>
             )}
@@ -251,7 +251,7 @@ function Dashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-3xl border border-dashed border-border bg-card/60 p-8 text-center sm:p-10"
+                className="rounded-3xl border border-dashed border-border bg-card/60 p-8 backdrop-blur-md text-center sm:p-10"
               >
                 <MessageCircleHeart className="mx-auto size-8 text-primary" />
                 <p className="mt-3 font-display text-lg font-semibold">
