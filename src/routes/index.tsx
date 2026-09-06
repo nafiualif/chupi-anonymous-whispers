@@ -186,7 +186,7 @@ function Home() {
         {/* Preview cards */}
         <section className="relative mt-14 sm:mt-20">
           <div className="relative mx-auto max-w-md [perspective:1200px]">
-            <div className="rotate-[-1.5deg] rounded-3xl border border-border bg-card p-6 shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-transform duration-500 hover:rotate-0 hover:-translate-y-1.5 hover:[transform:rotateX(4deg)]">
+            <div className="glass-card rotate-[-1.5deg] rounded-3xl p-6 transition-transform duration-500 hover:rotate-0 hover:-translate-y-1.5 hover:[transform:rotateX(4deg)]">
               <p className="text-[0.62rem] font-semibold uppercase tracking-widest text-muted-foreground">
                 Anonymous
               </p>
@@ -257,7 +257,7 @@ function Home() {
           {promises.map((f) => (
             <div
               key={f.title}
-              className="rounded-3xl border border-border bg-card p-6 shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-transform duration-300 hover:-translate-y-1"
+              className="glass-card rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lift"
             >
               <span
                 className={`mb-4 inline-flex size-11 items-center justify-center rounded-2xl ${f.tint}`}
