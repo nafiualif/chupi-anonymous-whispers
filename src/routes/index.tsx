@@ -12,7 +12,8 @@ import {
 
 
 
-const SITE_URL = "https://chupi-anonymous-whispers.lovable.app";
+const SITE_URL = "https://chupi.lovable.app";
+const LOGO_URL = `${SITE_URL}/logo.png`;
 const HOME_TITLE = "Chupi — Anonymous Messages & Secret Whispers";
 const HOME_DESCRIPTION =
   "Chupi gives you a personal link so friends can send you anonymous messages and questions. Honest, filtered for hate and harassment, and you can switch your link off anytime.";
