@@ -106,6 +106,9 @@
   --gradient-card: linear-gradient(140deg, oklch(0.995 0.004 84) 0%, oklch(0.978 0.008 78) 100%);
   --shadow-soft: 0 8px 24px -16px oklch(0.35 0.03 60 / 0.35);
   --shadow-lift: 0 20px 45px -26px oklch(0.3 0.03 60 / 0.4);
+  --shadow-glass: 0 1px 2px oklch(0.3 0.03 60 / 0.04), 0 12px 32px -18px oklch(0.3 0.03 60 / 0.18);
+  --glass-surface: oklch(0.995 0.004 84 / 0.72);
+  --glass-border: oklch(1 0 0 / 0.55);
 
   --forest: oklch(0.3834 0.0562 172.4);
   --forest-foreground: oklch(1 0 0);
