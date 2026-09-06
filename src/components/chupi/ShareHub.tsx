@@ -55,7 +55,7 @@ export function ShareHub({ displayName, slug, link, linkEnabled, loading, stats 
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden rounded-[1.75rem] border border-border/60 bg-card-gradient p-5 shadow-lift sm:p-6"
+      className="glass-card relative overflow-hidden rounded-[1.75rem] p-5 shadow-lift sm:p-6"
     >
       <div
         aria-hidden="true"
@@ -173,7 +173,7 @@ export function ShareHub({ displayName, slug, link, linkEnabled, loading, stats 
 
 function Stat({ emoji, label, value }: { emoji: string; label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-border/60 bg-background/60 px-2 py-2.5 text-center">
+    <div className="rounded-2xl border border-border/50 bg-background/50 px-2 py-2.5 text-center backdrop-blur-sm">
       <p className="font-display text-base font-bold leading-none">
         <span className="mr-1 text-sm">{emoji}</span>
         {value}
